@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview T-Mobile - Data Engineer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #E20074 0%, #C4006D 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .candidate-info {
+            background: #f8f9fa;
+            padding: 30px;
+            margin: 30px;
+            border-radius: 15px;
+            border-left: 5px solid #E20074;
+        }
+
+        .candidate-info h2 {
+            color: #E20074;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 1.05em;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #E20074;
+            box-shadow: 0 0 0 3px rgba(226, 0, 116, 0.1);
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .question-block {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 5px solid #E20074;
+            transition: all 0.3s ease;
+        }
+
+        .question-block:hover {
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .question-block.easy {
+            border-left-color: #4caf50;
+        }
+
+        .question-block.medium {
+            border-left-color: #ff9800;
+        }
+
+        .question-block.hard {
+            border-left-color: #f44336;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .question-number {
+            background: #E20074;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .difficulty-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+
+        .difficulty-badge.easy {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .difficulty-badge.medium {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .difficulty-badge.hard {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .question-score {
+            background: #e3f2fd;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #1976d2;
+            font-size: 1.1em;
+        }
+
+        .question-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+            margin: 15px 0;
+            line-height: 1.5;
+        }
+
+        .answers {
+            margin-top: 20px;
+        }
+
+        .answer-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .answer-item:hover {
+            border-color: #E20074;
+            background: #fff5f9;
+        }
+
+        .answer-item.checked {
+            border-color: #E20074;
+            background: #fff0f6;
+        }
+
+        .answer-item label {
+            display: flex;
+            align-items: flex-start;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .answer-item input[type="checkbox"] {
+            margin-right: 15px;
+            margin-top: 3px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #E20074;
+        }
+
+        .answer-text {
+            flex: 1;
+            font-size: 1.05em;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .final-score {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 40px;
+            position: sticky;
+            top: 20px;
+        }
+
+        .final-score h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .score-display {
+            font-size: 4em;
+            font-weight: bold;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .score-breakdown {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .score-category {
+            background: rgba(255,255,255,0.2);
+            padding: 15px 25px;
+            border-radius: 10px;
+        }
+
+        .score-category-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .score-category-value {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .score-message {
+            font-size: 1.3em;
+            margin-top: 15px;
+            opacity: 0.95;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: white;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #11998e;
+        }
+
+        .reset-button {
+            background: white;
+            color: #11998e;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .reset-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .report-output {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+
+        .report-output h2 {
+            font-size: 2em;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .report-content {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            padding: 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            line-height: 1.8;
+            white-space: pre-line;
+            font-family: 'Courier New', monospace;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .question-title {
+                font-size: 1.1em;
+            }
+            
+            .score-display {
+                font-size: 3em;
+            }
+
+            .question-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Interview T-Mobile</h1>
+            <p>Data Engineer - Data Vault & dbt (Praktické Otázky)</p>
+        </div>
+
+        <div class="candidate-info">
+            <h2>👤 Informácie o kandidátovi</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName">Meno *</label>
+                    <input type="text" id="firstName" placeholder="Zadajte vaše meno" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Priezvisko *</label>
+                    <input type="text" id="lastName" placeholder="Zadajte vaše priezvisko" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group full-width">
+                    <label for="experience">Pracovné skúsenosti (roky) *</label>
+                    <select id="experience" required>
+                        <option value="">Vyberte úroveň skúseností</option>
+                        <option value="0-1">0-1 rok (Junior)</option>
+                        <option value="1-3">1-3 roky (Junior/Medior)</option>
+                        <option value="3-5">3-5 rokov (Medior)</option>
+                        <option value="5-8">5-8 rokov (Senior)</option>
+                        <option value="8+">8+ rokov (Senior+)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="question-block easy" id="q1">
+                <div class="question-header">
+                    <div class="question-number">1</div>
+                    <div class="difficulty-badge easy">🟢 Ľahká</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 4 body
+                    </div>
+                </div>
+                <div class="question-title">
+                    Predstav si, že máš tabuľku `customers` v transakčnom systéme. Zákazník zmení email adresu. Ako by si to riešil v klasickej relačnej DB vs v Data Vault? Aký je hlavný rozdiel?
+                </div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="1" data-difficulty="easy">
+                            <span class="answer-text"><strong>Klasická DB:</strong> UPDATE na existujúcom riadku - pôvodná hodnota sa stratí (alebo SCD Type 2 duplikuje celý riadok)</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="1" data-difficulty="easy">
+                            <span class="answer-text"><strong>Data Vault prístup:</strong> Hub zostáva nezmenený (immutable), pridá sa nový riadok do Satellite s novým emailom</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="1" data-difficulty="easy">
+                            <span class="answer-text"><strong>Výhoda:</strong> V Data Vault pôvodný email zostáva zachovaný, máš plnú históriu zmien, lepšia auditovateľnosť</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="1" data-difficulty="easy">
+                            <span class="answer-text"><strong>Praktické použitie:</strong> Vieš zodpovedať "Aký email mal zákazník 1.1.2024?" - v klasickej DB už nevieš, v Data Vault áno</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block easy" id="q2">
+                <div class="question-header">
+                    <div class="question-number">2</div>
+                    <div class="difficulty-badge easy">🟢 Ľahká</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 4 body
+                    </div>
+                </div>
+                <div class="question-title">
+                    Máš dbt projekt s 50+ modelmi a build trvá 2 hodiny. Business chce aktualizovať len jeden report každú hodinu. Ako by si to optimalizoval?
+                </div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="2" data-difficulty="easy">
+                            <span class="answer-text"><strong>Selective run:</strong> Použiť `dbt run --select report_name+` (model + všetky jeho dependencies), nie plný build</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="2" data-difficulty="easy">
+                            <span class="answer-text"><strong>Incremental models:</strong> Zmeniť modely na incremental (materialized='incremental'), spracovať len nové/zmenené dáta</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="2" data-difficulty="easy">
+                            <span class="answer-text"><strong>Tags/groups:</strong> Použiť tagy (dbt run --select tag:hourly) alebo groups pre organizáciu modelov podľa refresh frequency</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="2" data-difficulty="easy">
+                            <span class="answer-text"><strong>Scheduling:</strong> Rozdeliť na viac jobov v orchestrátore (Airflow) - kritické modely častejšie, menej dôležité zriedkavejšie</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block medium" id="q3">
+                <div class="question-header">
+                    <div class="question-number">3</div>
+                    <div class="difficulty-badge medium">🟡 Stredná</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 5 bodov
+                    </div>
+                </div>
+                <div class="question-title">
+                    Potrebuješ integrovať dáta z API, ktoré má rate limit 100 requestov/minútu a máš 50 000 produktov na update. Ako by si to navrhol v dbt/Python pipeline?
+                </div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="3" data-difficulty="medium">
+                            <span class="answer-text"><strong>Batch processing:</strong> Rozdeliť na batch-e po 100 produktoch, sleep medzi batch-ami (60 sekúnd), celkový čas ~8.5 hodín</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="3" data-difficulty="medium">
+                            <span class="answer-text"><strong>Incremental approach:</strong> Načítať len changed produkty (delta load) - identifikovať pomocou last_modified_date alebo hash comparison</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="3" data-difficulty="medium">
+                            <span class="answer-text"><strong>Staging layer:</strong> Prvý krok: Python script stiahne API dáta do staging table/file, druhý krok: dbt spracuje staging → raw vault</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="3" data-difficulty="medium">
+                            <span class="answer-text"><strong>Error handling:</strong> Retry mechanism s exponential backoff, logovanie failed requests, queue pre retry (dead letter queue)</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="3" data-difficulty="medium">
+                            <span class="answer-text"><strong>Optimalizácia:</strong> Využiť bulk endpoints ak API podporuje (namiesto 1 request = 1 produkt), alebo paralelizovaťs viacerými API keys</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block medium" id="q4">
+                <div class="question-header">
+                    <div class="question-number">4</div>
+                    <div class="difficulty-badge medium">🟡 Stredná</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 5 bodov
+                    </div>
+                </div>
+                <div class="question-title">
+                    V Data Vault máš 3 satellites na produkt z rôznych zdrojov (ERP, E-shop, CRM). Business chce jeden unified view. Ako vytvoríš "Golden Record" a ako rozhodneš, ktorému zdroju dôverovať pri konfliktoch?
+                </div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="4" data-difficulty="medium">
+                            <span class="answer-text"><strong>Business Vault view:</strong> Vytvoriť view/table joinujúci všetky 3 satellites, každý atribút má definovaného "source of truth" (napr. cena z E-shop, kategória z ERP)</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="4" data-difficulty="medium">
+                            <span class="answer-text"><strong>Priority rules:</strong> Definovať hierarchiu zdrojov pre každý atribút pomocou COALESCE (napr. COALESCE(eshop.price, erp.price, crm.price))</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="4" data-difficulty="medium">
+                            <span class="answer-text"><strong>Metadata tracking:</strong> Pridať stĺpce source_system, last_updated_date pre každý atribút, aby user vedel odkiaľ hodnota pochádza</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="4" data-difficulty="medium">
+                            <span class="answer-text"><strong>Conflict detection:</strong> Flagovať produkty s konfliktmi (napr. rozdielne názvy v ERP vs E-shop), vytvoriť monitoring report pre business</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="4" data-difficulty="medium">
+                            <span class="answer-text"><strong>Business rules:</strong> Implementovať validácie (napr. e-shop cena nesmie byť > 120% ERP base price), flagovať anomálie</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block medium" id="q5">
+                <div class="question-header">
+                    <div class="question-number">5</div>
+                    <div class="difficulty-badge medium">🟡 Stredná</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 5 bodov
+                    </div>
+                </div>
+                <div class="question-title">
+                    dbt test zlyháva na production, ale na dev prostredí prechádza. Ako by si debugoval tento problém a aké sú možné príčiny?
+                </div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="5" data-difficulty="medium">
+                            <span class="answer-text"><strong>Rozdielne dáta:</strong> Production má viac/iné dáta ako dev (edge cases, ktoré dev nemá), skontrolovať row counts a sample dát</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="5" data-difficulty="medium">
+                            <span class="answer-text"><strong>Timing issues:</strong> Na production bežia testy skôr než sa dokončí load (race condition), riešiť pomocou dependencies/waits v orchestrátore</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="5" data-difficulty="medium">
+                            <span class="answer-text"><strong>Environment config:</strong> Rozdielne schema, permissions, alebo dbt profiles.yml nastavenia medzi dev a prod</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="5" data-difficulty="medium">
+                            <span class="answer-text"><strong>Debug stratégia:</strong> Použiť `dbt test --store-failures` na prod, pozrieť failed rows, porovnať s dev dátami, reprodukovať lokálne</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="5" data-difficulty="medium">
+                            <span class="answer-text"><strong>Test design:</strong> Test môže byť príliš striktný alebo nezohľadňovať business rules (napr. test na unique, ale business povoluje duplikáty v určitých prípadoch)</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block hard" id="q6">
+                <div class="question-header">
+                    <div class="question-number">6</div>
+                    <div class="difficulty-badge hard">🔴 Ťažká</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 6 bodov
+                    </div>
+                </div>
+                <div class="question-title">
+                    Business potrebuje report "Customer 360" - všetky info o zákazníkovi (profile, orders, payments, support tickets) z posledných 3 rokov. V Data Vault to vyžaduje 8+ JOINov a query trvá 5 minút. Ako by si to optimalizoval na < 10 sekúnd?
+                </div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="6" data-difficulty="hard">
+                            <span class="answer-text"><strong>Point-in-Time (PIT) table:</strong> Pre-compute daily snapshoty všetkých satellites pre zákazníka, redukuje JOINy z 8 na 1-2</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="6" data-difficulty="hard">
+                            <span class="answer-text"><strong>Bridge table:</strong> Materialized table s pre-joined hubmi a linkami (customer → orders → products), refresh denne cez dbt</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="6" data-difficulty="hard">
+                            <span class="answer-text"><strong>Agregácie:</strong> Pre-compute metriky (total_orders, lifetime_value, avg_ticket_size) do summary table, nemusíš to počítať on-the-fly</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="6" data-difficulty="hard">
+                            <span class="answer-text"><strong>Partitioning/Clustering:</strong> PARTITION BY customer_hk a year, CLUSTER BY (customer_hk, load_date), skenuje len relevantné partitions</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="6" data-difficulty="hard">
+                            <span class="answer-text"><strong>Materialized view:</strong> Vytvoriť customer_360 ako materialized view/table, incrementálne update len changed customers</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="6" data-difficulty="hard">
+                            <span class="answer-text"><strong>Caching layer:</strong> Pre často pristupovaných zákazníkov použiť Redis/memcached cache, alebo query result cache v DWH</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block hard" id="q7">
+                <div class="question-header">
+                    <div class="question-number">7</div>
+                    <div class="difficulty-badge hard">🔴 Ťažká</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 6 bodov
+                    </div>
+                </div>
+                <div class="question-title">
+                    Zistíš, že za posledných 6 mesiacov sa do Data Vault nahrávali duplicitné záznamy kvôli bug-u v ETL. Teraz máš v hub_customer duplikáty (rovnaký customer_id s rôznymi hash). Ako by si to vyčistil bez straty dát a histórie?
+                </div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="7" data-difficulty="hard">
+                            <span class="answer-text"><strong>Analýza rozsahu:</strong> Najprv identifikovať všetky duplicate páry, počet ovplyvnených zákazníkov, satellites a links, ktoré ukazujú na duplicate hashes</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="7" data-difficulty="hard">
+                            <span class="answer-text"><strong>Merge stratégia:</strong> Určiť "master" hash (najstarší load_date alebo najviac satellites), všetky ostatné duplikáty sú "slave" hashes</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="7" data-difficulty="hard">
+                            <span class="answer-text"><strong>Satellite migration:</strong> UPDATE/INSERT satellites - zmeniť customer_hk z "slave" na "master", zachovať load_date a record_source (append, nie overwrite)</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="7" data-difficulty="hard">
+                            <span class="answer-text"><strong>Link update:</strong> UPDATE linky - nahradiť "slave" hash za "master" hash v customer_hk FK, zachovať link_hk integritu</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="7" data-difficulty="hard">
+                            <span class="answer-text"><strong>Audit trail:</strong> Vytvoriť audit table zaznamenávajúcu merge (old_hash, new_hash, merge_date, reason), soft-delete duplicate hubov (nie hard delete)</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="7" data-difficulty="hard">
+                            <span class="answer-text"><strong>Prevention:</strong> Pridať dbt test unique na (customer_id) v staging, constraint na hub level, monitoring pre future duplicates</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block hard" id="q8">
+                <div class="question-header">
+                    <div class="question-number">8</div>
+                    <div class="difficulty-badge hard">🔴 Ťažká</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 6 bodov
+                    </div>
+                </div>
+                <div class="question-title">
+                    Potrebuješ implementovať GDPR "right to be forgotten" v Data Vault architektúre. Zákazník žiada vymazanie všetkých osobných údajov. Ako to urobíš bez porušenia Data Vault principov (never delete)?
+                </div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="8" data-difficulty="hard">
+                            <span class="answer-text"><strong>Pseudonymization approach:</strong> Nahradiť PII v satellites anonymizovanými hodnotami (email → hashed_email, name → "REDACTED"), zachovať štruktúru</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="8" data-difficulty="hard">
+                            <span class="answer-text"><strong>Separate PII satellites:</strong> Dizajn: Oddeliť PII do vlastných satellites (sat_customer_pii), non-PII ostávajú (sat_customer_metadata), delete len PII satellites</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="8" data-difficulty="hard">
+                            <span class="answer-text"><strong>Deletion satellite:</strong> Pridať nový satellite row s flagom is_deleted=true a anonymizovanými dátami, Business Vault views filtrujú deleted records</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="8" data-difficulty="hard">
+                            <span class="answer-text"><strong>Encryption/Tokenization:</strong> PII uložené encrypted s customer-specific key, pri GDPR request zmazať encryption key - data ostávajú ale sú nečitateľné</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="8" data-difficulty="hard">
+                            <span class="answer-text"><strong>Audit a compliance:</strong> Logovať všetky GDPR requests a actions, retention policy pre audit logs (napr. 7 rokov), dokázať compliance pre regulátory</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="8" data-difficulty="hard">
+                            <span class="answer-text"><strong>Hub integrity:</strong> Hub zostáva (obsahuje len hash), všetky FK v linkoch fungujú, analytika na non-PII dátach možná (agregáty, trendy)</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="final-score">
+                <h2>📊 Celkové Skóre</h2>
+                <div class="score-display" id="totalScore">0%</div>
+                
+                <div class="score-breakdown">
+                    <div class="score-category">
+                        <div class="score-category-label">🟢 Ľahké</div>
+                        <div class="score-category-value"><span id="easyScore">0</span>/8</div>
+                    </div>
+                    <div class="score-category">
+                        <div class="score-category-label">🟡 Stredné</div>
+                        <div class="score-category-value"><span id="mediumScore">0</span>/15</div>
+                    </div>
+                    <div class="score-category">
+                        <div class="score-category-label">🔴 Ťažké</div>
+                        <div class="score-category-value"><span id="hardScore">0</span>/18</div>
+                    </div>
+                </div>
+
+                <div class="score-message" id="scoreMessage">Začni zaškrtávať odpovede!</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%">0%</div>
+                </div>
+                <button class="reset-button" onclick="generateReport()">📄 Vygenerovať report</button>
+                <button class="reset-button" onclick="resetAll()">🔄 Reset všetkých odpovedí</button>
+            </div>
+
+            <div id="reportSection" style="display: none;" class="report-output">
+                <h2>📋 Interview Report - T-Mobile Data Engineer</h2>
+                <div class="report-content" id="reportContent"></div>
+                <button class="reset-button" onclick="downloadPDF()">📥 Stiahnuť PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questionPoints = {
+            1: 4, 2: 4,
+            3: 5, 4: 5, 5: 5,
+            6: 6, 7: 6, 8: 6
+        };
+        
+        const totalPoints = Object.values(questionPoints).reduce((a, b) => a + b, 0);
+
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                updateQuestionScore(this);
+                updateTotalScore();
+                
+                const answerItem = this.closest('.answer-item');
+                if (this.checked) {
+                    answerItem.classList.add('checked');
+                } else {
+                    answerItem.classList.remove('checked');
+                }
+            });
+        });
+
+        function updateQuestionScore(checkbox) {
+            const questionNum = checkbox.getAttribute('data-question');
+            const questionBlock = document.getElementById('q' + questionNum);
+            const checkboxes = questionBlock.querySelectorAll('input[type="checkbox"]');
+            const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+            const scoreDisplay = questionBlock.querySelector('.score-value');
+            
+            scoreDisplay.textContent = checkedCount;
+            
+            scoreDisplay.style.transition = 'transform 0.2s';
+            scoreDisplay.style.transform = 'scale(1.3)';
+            setTimeout(() => {
+                scoreDisplay.style.transform = 'scale(1)';
+            }, 200);
+        }
+
+        function updateTotalScore() {
+            let totalChecked = 0;
+            let easyChecked = 0;
+            let mediumChecked = 0;
+            let hardChecked = 0;
+            
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                if (checkbox.checked) {
+                    totalChecked++;
+                    const difficulty = checkbox.getAttribute('data-difficulty');
+                    if (difficulty === 'easy') easyChecked++;
+                    else if (difficulty === 'medium') mediumChecked++;
+                    else if (difficulty === 'hard') hardChecked++;
+                }
+            });
+            
+            const percentage = Math.round((totalChecked / totalPoints) * 100);
+            const totalScoreElement = document.getElementById('totalScore');
+            const progressFill = document.getElementById('progressFill');
+            const scoreMessage = document.getElementById('scoreMessage');
+            
+            document.getElementById('easyScore').textContent = easyChecked;
+            document.getElementById('mediumScore').textContent = mediumChecked;
+            document.getElementById('hardScore').textContent = hardChecked;
+            
+            totalScoreElement.textContent = percentage + '%';
+            progressFill.style.width = percentage + '%';
+            progressFill.textContent = percentage + '%';
+            
+            if (percentage === 0) {
+                scoreMessage.textContent = '🎯 Začni zaškrtávať odpovede!';
+            } else if (percentage < 30) {
+                scoreMessage.textContent = '📚 Junior level - ešte sa treba učiť základy...';
+            } else if (percentage < 50) {
+                scoreMessage.textContent = '💪 Junior/Medior - dobrý základ, pokračuj!';
+            } else if (percentage < 70) {
+                scoreMessage.textContent = '👍 Medior level - veľmi dobre, solidné znalosti!';
+            } else if (percentage < 85) {
+                scoreMessage.textContent = '🔥 Medior/Senior - excelentné! Skoro tam!';
+            } else if (percentage < 100) {
+                scoreMessage.textContent = '🚀 Senior level - výborne! Takmer perfektné!';
+            } else {
+                scoreMessage.textContent = '🎉 Senior+ level - Perfektné! Všetko správne!';
+            }
+            
+            totalScoreElement.style.transition = 'transform 0.3s';
+            totalScoreElement.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                totalScoreElement.style.transform = 'scale(1)';
+            }, 300);
+        }
+
+        function resetAll() {
+            if (!confirm('Naozaj chceš resetovať všetky odpovede?')) {
+                return;
+            }
+            
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+                checkbox.closest('.answer-item').classList.remove('checked');
+            });
+            
+            document.querySelectorAll('.score-value').forEach(scoreValue => {
+                scoreValue.textContent = '0';
+            });
+            
+            updateTotalScore();
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        document.querySelectorAll('.answer-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (e.target.tagName !== 'INPUT') {
+                    const checkbox = this.querySelector('input[type="checkbox"]');
+                    checkbox.checked = !checkbox.checked;
+                    checkbox.dispatchEvent(new Event('change'));
+                }
+            });
+        });
+
+        window.addEventListener('load', () => {
+            updateTotalScore();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+                e.preventDefault();
+                resetAll();
+            }
+        });
+
+        function generateReport() {
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const experience = document.getElementById('experience').value;
+
+            if (!firstName || !lastName || !experience) {
+                alert('Prosím vyplňte všetky povinné polia (Meno, Priezvisko, Pracovné skúsenosti)!');
+                return;
+            }
+
+            let totalChecked = 0;
+            let easyChecked = 0;
+            let mediumChecked = 0;
+            let hardChecked = 0;
+            
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                if (checkbox.checked) {
+                    totalChecked++;
+                    const difficulty = checkbox.getAttribute('data-difficulty');
+                    if (difficulty === 'easy') easyChecked++;
+                    else if (difficulty === 'medium') mediumChecked++;
+                    else if (difficulty === 'hard') hardChecked++;
+                }
+            });
+            
+            const percentage = Math.round((totalChecked / totalPoints) * 100);
+            
+            const experienceLabels = {
+                '0-1': '0-1 rok (Junior)',
+                '1-3': '1-3 roky (Junior/Medior)',
+                '3-5': '3-5 rokov (Medior)',
+                '5-8': '5-8 rokov (Senior)',
+                '8+': '8+ rokov (Senior+)'
+            };
+
+            const reportText = `
+═══════════════════════════════════════════════════════════
+            T - MOBILE DATA ENGINEER - INTERVIEW REPORT
+═══════════════════════════════════════════════════════════
+
+Kandidát: ${firstName} ${lastName}
+Seniorita: ${experienceLabels[experience]}
+Dátum: ${new Date().toLocaleDateString('sk-SK')}
+
+───────────────────────────────────────────────────────────
+                        CELKOVÉ SKÓRE
+───────────────────────────────────────────────────────────
+
+Celkové skóre: ${percentage}% (${totalChecked}/${totalPoints} bodov)
+
+Rozdelenie podľa obtiažnosti:
+  🟢 Ľahké:   ${easyChecked}/8 bodov
+  🟡 Stredné: ${mediumChecked}/15 bodov
+  🔴 Ťažké:   ${hardChecked}/18 bodov
+
+───────────────────────────────────────────────────────────
+                          HODNOTENIE
+───────────────────────────────────────────────────────────
+
+${getEvaluationText(percentage)}
+
+═══════════════════════════════════════════════════════════
+`;
+
+            document.getElementById('reportContent').textContent = reportText;
+            document.getElementById('reportSection').style.display = 'block';
+            
+            document.getElementById('reportSection').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+        }
+
+        function getEvaluationTextEnglish(percentage) {
+            if (percentage === 0) {
+                return 'Candidate did not complete any answers.';
+            } else if (percentage < 30) {
+                return 'Junior level - Candidate has basic awareness of the topic but\nneeds significant improvement in Data Vault and dbt areas.';
+            } else if (percentage < 50) {
+                return 'Junior/Medior level - Candidate has a good foundation but needs\nmore practical experience.';
+            } else if (percentage < 70) {
+                return 'Medior level - Candidate has solid knowledge of Data Vault\nand dbt. Recommended for Medior Data Engineer position.';
+            } else if (percentage < 85) {
+                return 'Medior/Senior level - Excellent knowledge! Candidate has\ndeep understanding of Data Vault architecture and dbt.\nRecommended for Senior Data Engineer position.';
+            } else if (percentage < 100) {
+                return 'Senior level - Outstanding! Candidate demonstrated advanced knowledge\nand practical experience. Strong candidate for Senior position.';
+            } else {
+                return 'Senior+ level - Perfect score! Candidate has expert knowledge\nof Data Vault and dbt. Recommended for Senior/Lead position.';
+            }
+        }
+
+        function getEvaluationText(percentage) {
+            if (percentage === 0) {
+                return 'Kandidát nevyplnil žiadne odpovede.';
+            } else if (percentage < 30) {
+                return 'Junior level - Kandidát má základné povedomie o téme, ale\npotrebuje výrazné zlepšenie v oblasti Data Vault a dbt.';
+            } else if (percentage < 50) {
+                return 'Junior/Medior level - Kandidát má dobrý základ, ale potrebuje\nviac praktických skúseností.';
+            } else if (percentage < 70) {
+                return 'Medior level - Kandidát má solídne znalosti Data Vault\na dbt. Odporúčame na pozíciu Medior Data Engineer.';
+            } else if (percentage < 85) {
+                return 'Medior/Senior level - Excelentné znalosti! Kandidát má\nhĺbkové porozumenie Data Vault architektúre a dbt.\nOdporúčame na pozíciu Senior Data Engineer.';
+            } else if (percentage < 100) {
+                return 'Senior level - Výborné! Kandidát preukázal pokročilé znalosti\na praktické skúsenosti. Silný kandidát na Senior pozíciu.';
+            } else {
+                return 'Senior+ level - Perfektné skóre! Kandidát má expertné znalosti\nData Vault a dbt. Odporúčame na Senior/Lead pozíciu.';
+            }
+        }
+
+        function copyReport() {
+            const reportText = document.getElementById('reportContent').textContent;
+            navigator.clipboard.writeText(reportText).then(() => {
+                alert('✅ Report bol skopírovaný do schránky!');
+            }).catch(err => {
+                alert('❌ Chyba pri kopírovaní: ' + err);
+            });
+        }
+
+        function downloadPDF() {
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const experience = document.getElementById('experience').value;
+            
+            let totalChecked = 0;
+            let easyChecked = 0;
+            let mediumChecked = 0;
+            let hardChecked = 0;
+            
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                if (checkbox.checked) {
+                    totalChecked++;
+                    const difficulty = checkbox.getAttribute('data-difficulty');
+                    if (difficulty === 'easy') easyChecked++;
+                    else if (difficulty === 'medium') mediumChecked++;
+                    else if (difficulty === 'hard') hardChecked++;
+                }
+            });
+            
+            const percentage = Math.round((totalChecked / totalPoints) * 100);
+            
+            const experienceLabels = {
+                '0-1': '0-1 rok (Junior)',
+                '1-3': '1-3 roky (Junior/Medior)',
+                '3-5': '3-5 rokov (Medior)',
+                '5-8': '5-8 rokov (Senior)',
+                '8+': '8+ rokov (Senior+)'
+            };
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Nastavenia
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const margin = 20;
+            let yPosition = 20;
+            
+            // Hlavička - T-Mobile farba
+            doc.setFillColor(226, 0, 116); // T-Mobile pink
+            doc.rect(0, 0, pageWidth, 40, 'F');
+            
+            // Titulok
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(20);
+            doc.setFont(undefined, 'bold');
+            doc.text('T - MOBILE DATA ENGINEER', pageWidth / 2, 15, { align: 'center' });
+            doc.setFontSize(14);
+            doc.text('Interview Report', pageWidth / 2, 25, { align: 'center' });
+            
+            yPosition = 50;
+            doc.setTextColor(0, 0, 0);
+            
+            // Informácie o kandidátovi
+            doc.setFontSize(16);
+            doc.setFont(undefined, 'bold');
+            doc.text('Candidate Information', margin, yPosition);
+            yPosition += 10;
+            
+            doc.setFontSize(11);
+            doc.setFont(undefined, 'normal');
+            doc.text(`Name: ${firstName} ${lastName}`, margin, yPosition);
+            yPosition += 7;
+            doc.text(`Seniority Level: ${experienceLabels[experience]}`, margin, yPosition);
+            yPosition += 7;
+            doc.text(`Date: ${new Date().toLocaleDateString('en-US')}`, margin, yPosition);
+            yPosition += 15;
+            
+            // Čiara
+            doc.setDrawColor(200, 200, 200);
+            doc.line(margin, yPosition, pageWidth - margin, yPosition);
+            yPosition += 10;
+            
+            // Celkové skóre - hlavný box
+            doc.setFillColor(17, 153, 142); // Zelená
+            doc.rect(margin, yPosition, pageWidth - 2 * margin, 30, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text('TOTAL SCORE', pageWidth / 2, yPosition + 10, { align: 'center' });
+            
+            doc.setFontSize(24);
+            doc.text(`${percentage}%`, pageWidth / 2, yPosition + 23, { align: 'center' });
+            
+            yPosition += 40;
+            doc.setTextColor(0, 0, 0);
+            
+            // Rozdelenie bodov
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'bold');
+            doc.text('Score Breakdown by Difficulty:', margin, yPosition);
+            yPosition += 10;
+            
+            doc.setFont(undefined, 'normal');
+            doc.setFontSize(11);
+            
+            // Ľahké
+            doc.setFillColor(76, 175, 80);
+            doc.circle(margin + 3, yPosition - 2, 2, 'F');
+            doc.text(`Easy:`, margin + 8, yPosition);
+            doc.setFont(undefined, 'bold');
+            doc.text(`${easyChecked}/8 points`, margin + 30, yPosition);
+            yPosition += 7;
+            
+            // Stredné
+            doc.setFont(undefined, 'normal');
+            doc.setFillColor(255, 152, 0);
+            doc.circle(margin + 3, yPosition - 2, 2, 'F');
+            doc.text(`Medium:`, margin + 8, yPosition);
+            doc.setFont(undefined, 'bold');
+            doc.text(`${mediumChecked}/15 points`, margin + 30, yPosition);
+            yPosition += 7;
+            
+            // Ťažké
+            doc.setFont(undefined, 'normal');
+            doc.setFillColor(244, 67, 54);
+            doc.circle(margin + 3, yPosition - 2, 2, 'F');
+            doc.text(`Hard:`, margin + 8, yPosition);
+            doc.setFont(undefined, 'bold');
+            doc.text(`${hardChecked}/18 points`, margin + 30, yPosition);
+            yPosition += 15;
+            
+            // Čiara
+            doc.setDrawColor(200, 200, 200);
+            doc.line(margin, yPosition, pageWidth - margin, yPosition);
+            yPosition += 10;
+            
+            // Hodnotenie
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'bold');
+            doc.text('EVALUATION', margin, yPosition);
+            yPosition += 8;
+            
+            doc.setFontSize(10);
+            doc.setFont(undefined, 'normal');
+            const evaluationText = getEvaluationTextEnglish(percentage);
+            const splitText = doc.splitTextToSize(evaluationText, pageWidth - 2 * margin);
+            doc.text(splitText, margin, yPosition);
+            yPosition += splitText.length * 6;
+            
+            // Footer
+            yPosition = doc.internal.pageSize.getHeight() - 15;
+            doc.setFontSize(8);
+            doc.setTextColor(150, 150, 150);
+            doc.text('Generated by T-Mobile Interview System', pageWidth / 2, yPosition, { align: 'center' });
+            
+            // Uloženie PDF
+            const fileName = `T-Mobile_Interview_${firstName}_${lastName}_${new Date().toISOString().split('T')[0]}.pdf`;
+            doc.save(fileName);
+        }
+    </script>
+</body>
+</html>
