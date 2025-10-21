@@ -5,44 +5,111 @@
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
   import { getFirestore, collection, getDocs, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-  // VLOŽ SVOJ FIREBASE CONFIG
-  const firebaseConfig = {
-    apiKey: "AIzaSyBiv8l8NO4nGFWyjhQe5WzXLxv58H03lHs",
-    authDomain: "interview-system-4cbf9.firebaseapp.com",
-    projectId: "interview-system-4cbf9",
-    storageBucket: "interview-system-4cbf9.firebasestorage.app",
-    messagingSenderId: "805986631869",
-    appId: "1:805986631869:web:574b1c6732eefad64eb7d4",
-    measurementId: "G-5T1PJE27FE"
-  };
+        // Firebase config - VLOŽ SVOJ CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyDpV4qVj-kXvpEBxh_oN8YrH0aZ0gZKz_4",  // Tvoj API key z Firebase Console
+            authDomain: "interview-system-4cbf9.firebaseapp.com",
+            projectId: "interview-system-4cbf9",
+            storageBucket: "interview-system-4cbf9.firebasestorage.app",
+            messagingSenderId: "1044835226397",
+            appId: "1:1044835226397:web:48a7b8d6e4e92a74a34081"
+        };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+        // Inicializuj Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        console.log('✅ Firebase inicializovaný');
 
-  // Načítaj kandidátov z Firestore
-  async function loadCandidatesFromFirestore() {
-    const querySnapshot = await getDocs(collection(db, "candidates"));
-    const candidates = [];
-    querySnapshot.forEach((doc) => {
-      candidates.push({ id: doc.id, ...doc.data() });
-    });
-    displayCandidates(candidates);
-  }
+        // Načítaj kandidátov z Firestore
+        async function loadCandidatesFromFirestore() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "candidates"));
+                const candidates = [];
+                
+                querySnapshot.forEach((docSnap) => {
+                    candidates.push({ 
+                        id: docSnap.id, 
+                        ...docSnap.data() 
+                    });
+                });
+                
+                console.log('📊 Načítaných kandidátov:', candidates.length, candidates);
+                displayCandidates(candidates);
+                
+            } catch (error) {
+                console.error('❌ Error loading candidates:', error);
+                document.getElementById('candidatesList').innerHTML = 
+                    `<div class="empty-state" style="color: red;">Chyba pri načítaní: ${error.message}</div>`;
+            }
+        }
 
-  // Delete kandidáta
-  async function deleteCandidateFromFirestore(candidateId) {
-    if (confirm('Naozaj chceš vymazať tohto kandidáta?')) {
-      await deleteDoc(doc(db, "candidates", candidateId));
-      loadCandidatesFromFirestore();
-    }
-  }
+        // Zmaž kandidáta
+        async function deleteCandidateFromFirestore(candidateId) {
+            if (confirm('Naozaj chceš vymazať tohto kandidáta?')) {
+                try {
+                    await deleteDoc(doc(db, "candidates", candidateId));
+                    console.log('🗑️ Kandidát zmazaný:', candidateId);
+                    loadCandidatesFromFirestore();
+                } catch (error) {
+                    console.error('❌ Error deleting:', error);
+                    alert('Chyba pri mazaní: ' + error.message);
+                }
+            }
+        }
 
-  // Expose functions globally
-  window.loadCandidatesFromFirestore = loadCandidatesFromFirestore;
-  window.deleteCandidateFromFirestore = deleteCandidateFromFirestore;
+        // Zobraz kandidátov v HTML
+        function displayCandidates(candidates) {
+            const list = document.getElementById('candidatesList');
+            
+            if (!candidates || candidates.length === 0) {
+                list.innerHTML = '<div class="empty-state">Zatiaľ žiadni kandidáti. Pridaj kandidátov cez interview formuláre.</div>';
+                return;
+            }
+            
+            // Zoradi podľa dátumu (najnovší prvý)
+            candidates.sort((a, b) => {
+                const dateA = a.timestamp || new Date(a.date).getTime();
+                const dateB = b.timestamp || new Date(b.date).getTime();
+                return dateB - dateA;
+            });
+            
+            list.innerHTML = candidates.map((candidate) => {
+                const date = candidate.date ? new Date(candidate.date).toLocaleDateString('sk-SK') : 'N/A';
+                const scoreColor = candidate.score >= 70 ? '#4caf50' : candidate.score >= 50 ? '#ff9800' : '#f44336';
+                
+                return `
+                    <div class="candidate-card">
+                        <div class="candidate-header">
+                            <div class="candidate-name">${candidate.name || 'Bez mena'}</div>
+                            <button class="delete-btn" onclick="window.deleteCandidateFromFirestore('${candidate.id}')">Delete</button>
+                        </div>
+                        <div class="candidate-position">${candidate.position || 'Neurčené'}</div>
+                        <div class="candidate-info">
+                            <div class="info-item">
+                                <span class="info-label">📅 Dátum:</span> ${date}
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">💼 Seniorita:</span> ${candidate.experience || 'N/A'}
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">📊 Skóre:</span> 
+                                <span style="color: ${scoreColor}; font-weight: bold;">${candidate.score}%</span> 
+                                (${candidate.totalPoints}/${candidate.maxPoints})
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
 
-  // Load on page load
-  loadCandidatesFromFirestore();
+        // Sprístupni funkcie globálne
+        window.loadCandidatesFromFirestore = loadCandidatesFromFirestore;
+        window.deleteCandidateFromFirestore = deleteCandidateFromFirestore;
+        window.displayCandidates = displayCandidates;
+
+        // Načítaj dáta hneď po načítaní stránky
+        loadCandidatesFromFirestore();
 </script>    
 <head>
     <meta charset="UTF-8">
