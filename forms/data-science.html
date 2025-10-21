@@ -684,7 +684,157 @@
                     </div>
                 </div>
             </div>
+            <div class="question-block easy" id="q11">
+                <div class="question-header">
+                    <div class="question-number">11</div>
+                    <div class="difficulty-badge easy">🟢 Ľahká</div>
+                    <div class="question-score"><span class="score-value">0</span> / 4 body</div>
+                </div>
+                <div class="question-title">List vs Tuple in Python? When do you use what?</div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="11" data-difficulty="easy">
+                            <span class="answer-text"><strong>List:</strong> Mutable (can modify after creation), uses square brackets [], slower, for collections that change</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="11" data-difficulty="easy">
+                            <span class="answer-text"><strong>Tuple:</strong> Immutable (cannot modify after creation), uses parentheses (), faster, less memory, for fixed collections</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="11" data-difficulty="easy">
+                            <span class="answer-text"><strong>Use list when:</strong> Data will be modified (append, remove, sort), working with dynamic collections, need list methods</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="11" data-difficulty="easy">
+                            <span class="answer-text"><strong>Use tuple when:</strong> Data should not change (coordinates, RGB values), dictionary keys, function return multiple values, better performance needed</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
 
+            <div class="question-block medium" id="q12">
+                <div class="question-header">
+                    <div class="question-number">12</div>
+                    <div class="difficulty-badge medium">🟡 Stredná</div>
+                    <div class="question-score"><span class="score-value">0</span> / 5 bodov</div>
+                </div>
+                <div class="question-title">What are decorators in Python?</div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="12" data-difficulty="medium">
+                            <span class="answer-text"><strong>Definition:</strong> Functions that modify behavior of other functions/methods, using @decorator_name syntax above function definition</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="12" data-difficulty="medium">
+                            <span class="answer-text"><strong>How they work:</strong> Take function as input, add functionality, return modified function - implements wrapper pattern</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="12" data-difficulty="medium">
+                            <span class="answer-text"><strong>Common uses:</strong> Logging, timing functions, authentication/authorization, caching (memoization), validation</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="12" data-difficulty="medium">
+                            <span class="answer-text"><strong>Built-in examples:</strong> @property, @staticmethod, @classmethod, @lru_cache for performance optimization</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="12" data-difficulty="medium">
+                            <span class="answer-text"><strong>Practical benefit:</strong> Clean code separation of concerns, reusable cross-cutting functionality, don't repeat yourself (DRY)</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block easy" id="q13">
+                <div class="question-header">
+                    <div class="question-number">13</div>
+                    <div class="difficulty-badge easy">🟢 Ľahká</div>
+                    <div class="question-score"><span class="score-value">0</span> / 4 body</div>
+                </div>
+                <div class="question-title">What is the purpose of the .groupby() method in the Pandas library?</div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="13" data-difficulty="easy">
+                            <span class="answer-text"><strong>Purpose:</strong> Groups rows of DataFrame based on column values, enabling aggregation and analysis per group</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="13" data-difficulty="easy">
+                            <span class="answer-text"><strong>Common operations:</strong> sum(), mean(), count(), min(), max() applied to each group separately</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="13" data-difficulty="easy">
+                            <span class="answer-text"><strong>Example use:</strong> df.groupby('category').mean() - calculates average for each category, like SQL GROUP BY</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="13" data-difficulty="easy">
+                            <span class="answer-text"><strong>Advanced features:</strong> Can group by multiple columns, apply custom functions with .agg(), transform data within groups</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block medium" id="q14">
+                <div class="question-header">
+                    <div class="question-number">14</div>
+                    <div class="difficulty-badge medium">🟡 Stredná</div>
+                    <div class="question-score"><span class="score-value">0</span> / 5 bodov</div>
+                </div>
+                <div class="question-title">Explain the difference between a generator and a normal function that returns a list. Why are generators (which use the yield keyword) particularly beneficial when processing very large, potentially memory-intensive datasets in data science?</div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="14" data-difficulty="medium">
+                            <span class="answer-text"><strong>Normal function:</strong> Returns entire list at once, all values stored in memory simultaneously</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="14" data-difficulty="medium">
+                            <span class="answer-text"><strong>Generator:</strong> Uses yield keyword, returns one value at a time (lazy evaluation), maintains state between calls</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="14" data-difficulty="medium">
+                            <span class="answer-text"><strong>Memory efficiency:</strong> Generator stores only current item, not entire dataset - critical for large datasets that won't fit in RAM</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="14" data-difficulty="medium">
+                            <span class="answer-text"><strong>Data science use:</strong> Processing large CSV files, streaming data, ETL pipelines, batch processing without loading everything into memory</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="14" data-difficulty="medium">
+                            <span class="answer-text"><strong>Example:</strong> Reading 100GB file line-by-line with generator vs loading all into list (would crash), enables processing datasets larger than available RAM</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
             <div class="final-score">
                 <h2>📊 Celkové Skóre</h2>
                 <div class="score-display" id="totalScore">0%</div>
