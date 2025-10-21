@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview - ML/Data Science Engineer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        const firebaseConfig = {
+            apiKey: "AIzaSyBiv8l8NO4nGFWyjhQe5WzXLxv58H03lHs",
+            authDomain: "interview-system-4cbf9.firebaseapp.com",
+            projectId: "interview-system-4cbf9",
+            storageBucket: "interview-system-4cbf9.firebasestorage.app",
+            messagingSenderId: "805986631869",
+            appId: "1:805986631869:web:574b1c6732eefad64eb7d4",
+            measurementId: "G-5T1PJE27FE"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        window.firestoreDb = db;
+        console.log('✅ Firebase inicializovaný');
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .header p { font-size: 1.2em; opacity: 0.9; }
+        .candidate-info {
+            background: #f8f9fa;
+            padding: 30px;
+            margin: 30px;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+        }
+        .candidate-info h2 { color: #667eea; margin-bottom: 20px; font-size: 1.5em; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group.full-width { grid-column: 1 / -1; }
+        .form-group label { font-weight: 600; margin-bottom: 8px; color: #333; font-size: 1.05em; }
+        .form-group input, .form-group select {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .content { padding: 40px; }
+        .question-block {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
+        }
+        .question-block:hover { box-shadow: 0 5px 20px rgba(0,0,0,0.1); transform: translateY(-2px); }
+        .question-block.easy { border-left-color: #4caf50; }
+        .question-block.medium { border-left-color: #ff9800; }
+        .question-block.hard { border-left-color: #f44336; }
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .question-number {
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .difficulty-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+        .difficulty-badge.easy { background: #e8f5e9; color: #2e7d32; }
+        .difficulty-badge.medium { background: #fff3e0; color: #e65100; }
+        .difficulty-badge.hard { background: #ffebee; color: #c62828; }
+        .question-score {
+            background: #e3f2fd;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #1976d2;
+            font-size: 1.1em;
+        }
+        .question-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+            margin: 15px 0;
+            line-height: 1.5;
+        }
+        .answers { margin-top: 20px; }
+        .answer-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .answer-item:hover { border-color: #667eea; background: #f0f4ff; }
+        .answer-item.checked { border-color: #667eea; background: #e8f0fe; }
+        .answer-item label {
+            display: flex;
+            align-items: flex-start;
+            cursor: pointer;
+            user-select: none;
+        }
+        .answer-item input[type="checkbox"] {
+            margin-right: 15px;
+            margin-top: 3px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+        .answer-text { flex: 1; font-size: 1.05em; line-height: 1.6; color: #555; }
+        .final-score {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 40px;
+            position: sticky;
+            top: 20px;
+        }
+        .final-score h2 { font-size: 2em; margin-bottom: 20px; }
+        .score-display {
+            font-size: 4em;
+            font-weight: bold;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        .score-breakdown {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .score-category { background: rgba(255,255,255,0.2); padding: 15px 25px; border-radius: 10px; }
+        .score-category-label { font-size: 0.9em; opacity: 0.9; margin-bottom: 5px; }
+        .score-category-value { font-size: 1.8em; font-weight: bold; }
+        .score-message { font-size: 1.3em; margin-top: 15px; opacity: 0.95; }
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: white;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #11998e;
+        }
+        .reset-button {
+            background: white;
+            color: #11998e;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+        .reset-button:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .report-output {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+        .report-output h2 { font-size: 2em; margin-bottom: 25px; text-align: center; }
+        .report-content {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            padding: 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            line-height: 1.8;
+            white-space: pre-line;
+            font-family: 'Courier New', monospace;
+        }
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.8em; }
+            .question-title { font-size: 1.1em; }
+            .score-display { font-size: 3em; }
+            .question-header { flex-direction: column; align-items: flex-start; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 ML/Data Science Interview</h1>
+            <p>Machine Learning & Data Science Engineer</p>
+        </div>
+        <div class="candidate-info">
+            <h2>👤 Informácie o kandidátovi</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName">Meno *</label>
+                    <input type="text" id="firstName" placeholder="Zadajte vaše meno" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Priezvisko *</label>
+                    <input type="text" id="lastName" placeholder="Zadajte vaše priezvisko" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group full-width">
+                    <label for="experience">Pracovné skúsenosti (roky) *</label>
+                    <select id="experience" required>
+                        <option value="">Vyberte úroveň skúseností</option>
+                        <option value="0-1">0-1 rok (Junior)</option>
+                        <option value="1-3">1-3 roky (Junior/Medior)</option>
+                        <option value="3-5">3-5 rokov (Medior)</option>
+                        <option value="5-8">5-8 rokov (Senior)</option>
+                        <option value="8+">8+ rokov (Senior+)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="question-block easy" id="q1">
+                <div class="question-header">
+                    <div class="question-number">1</div>
+                    <div class="difficulty-badge easy">🟢 Ľahká</div>
+                    <div class="question-score"><span class="score-value">0</span> / 4 body</div>
+                </div>
+                <div class="question-title">What is k-Fold Cross-Validation?</div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="1" data-difficulty="easy">
+                            <span class="answer-text"><strong>Definition:</strong> A resampling technique that divides dataset into k equal parts (folds), trains on k-1 folds and validates on remaining fold</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="1" data-difficulty="easy">
+                            <span class="answer-text"><strong>Process:</strong> Repeats k times, rotating which fold is used for validation, then averages the results</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="1" data-difficulty="easy">
+                            <span class="answer-text"><strong>Purpose:</strong> Reduces overfitting and provides more reliable estimate of model performance on unseen data</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="1" data-difficulty="easy">
+                            <span class="answer-text"><strong>Common values:</strong> Typically k=5 or k=10, balancing computational cost vs. variance reduction</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block easy" id="q2">
+                <div class="question-header">
+                    <div class="question-number">2</div>
+                    <div class="difficulty-badge easy">🟢 Ľahká</div>
+                    <div class="question-score"><span class="score-value">0</span> / 4 body</div>
+                </div>
+                <div class="question-title">What is the difference between supervised and unsupervised learning?</div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="2" data-difficulty="easy">
+                            <span class="answer-text"><strong>Supervised:</strong> Training data includes labeled examples (input-output pairs), model learns mapping from inputs to known outputs</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="2" data-difficulty="easy">
+                            <span class="answer-text"><strong>Unsupervised:</strong> Training data has no labels, model finds patterns/structure in data without guidance</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="2" data-difficulty="easy">
+                            <span class="answer-text"><strong>Supervised examples:</strong> Classification (spam detection), regression (price prediction), requires labeled training data</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="2" data-difficulty="easy">
+                            <span class="answer-text"><strong>Unsupervised examples:</strong> Clustering (customer segmentation), dimensionality reduction (PCA), anomaly detection</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block medium" id="q3">
+                <div class="question-header">
+                    <div class="question-number">3</div>
+                    <div class="difficulty-badge medium">🟡 Stredná</div>
+                    <div class="question-score"><span class="score-value">0</span> / 5 bodov</div>
+                </div>
+                <div class="question-title">What is reinforcement learning? What is it used for?</div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="3" data-difficulty="medium">
+                            <span class="answer-text"><strong>Definition:</strong> Learning paradigm where agent learns to make decisions by interacting with environment and receiving rewards/penalties</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="3" data-difficulty="medium">
+                            <span class="answer-text"><strong>Key components:</strong> Agent, environment, state, action, reward signal - agent learns optimal policy to maximize cumulative reward</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="3" data-difficulty="medium">
+                            <span class="answer-text"><strong>Game AI:</strong> Playing chess, Go, video games (AlphaGo, OpenAI Dota 2) - learning winning strategies through self-play</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="3" data-difficulty="medium">
+                            <span class="answer-text"><strong>Robotics & Control:</strong> Robot navigation, autonomous vehicles, resource management, optimizing complex sequential decisions</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="3" data-difficulty="medium">
+                            <span class="answer-text"><strong>Business applications:</strong> Recommendation systems, trading strategies, resource allocation, dynamic pricing</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block medium" id="q4">
+                <div class="question-header">
+                    <div class="question-number">4</div>
+                    <div class="difficulty-badge medium">🟡 Stredná</div>
+                    <div class="question-score"><span class="score-value">0</span> / 5 bodov</div>
+                </div>
+                <div class="question-title">What is data/class imbalance? What consequences does it have? How to treat those?</div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="4" data-difficulty="medium">
+                            <span class="answer-text"><strong>Definition:</strong> When classes in dataset are not equally represented (e.g., 95% negative, 5% positive cases)</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="4" data-difficulty="medium">
+                            <span class="answer-text"><strong>Consequences:</strong> Model biased toward majority class, poor performance on minority class, misleading accuracy metrics</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="4" data-difficulty="medium">
+                            <span class="answer-text"><strong>Resampling:</strong> Oversampling minority class (SMOTE), undersampling majority class, or combination of both</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="4" data-difficulty="medium">
+                            <span class="answer-text"><strong>Algorithm techniques:</strong> Class weights, cost-sensitive learning, ensemble methods (balanced random forest)</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="4" data-difficulty="medium">
+                            <span class="answer-text"><strong>Better metrics:</strong> Use precision, recall, F1-score, ROC-AUC instead of accuracy for imbalanced datasets</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block easy" id="q5">
+                <div class="question-header">
+                    <div class="question-number">5</div>
+                    <div class="difficulty-badge easy">🟢 Ľahká</div>
+                    <div class="question-score"><span class="score-value">0</span> / 4 body</div>
+                </div>
+                <div class="question-title">What is feature engineering?</div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="5" data-difficulty="easy">
+                            <span class="answer-text"><strong>Definition:</strong> Process of creating, transforming, and selecting features from raw data to improve model performance</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="5" data-difficulty="easy">
+                            <span class="answer-text"><strong>Techniques:</strong> Creating new features (interactions, polynomials), transforming existing ones (scaling, encoding), extracting from text/dates</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="5" data-difficulty="easy">
+                            <span class="answer-text"><strong>Importance:</strong> Often more impactful than algorithm choice, requires domain knowledge, can significantly boost model accuracy</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="5" data-difficulty="easy">
+                            <span class="answer-text"><strong>Examples:</strong> One-hot encoding categorical variables, extracting day/month from dates, creating ratio features, binning continuous variables</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block medium" id="q6">
+                <div class="question-header">
+                    <div class="question-number">6</div>
+                    <div class="difficulty-badge medium">🟡 Stredná</div>
+                    <div class="question-score"><span class="score-value">0</span> / 5 bodov</div>
+                </div>
+                <div class="question-title">What are transformer-based models?</div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="6" data-difficulty="medium">
+                            <span class="answer-text"><strong>Architecture:</strong> Neural network architecture based on self-attention mechanism, processes sequences without recurrence (unlike RNN/LSTM)</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="6" data-difficulty="medium">
+                            <span class="answer-text"><strong>Self-attention:</strong> Allows model to weigh importance of different words in sequence, capturing long-range dependencies efficiently</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="6" data-difficulty="medium">
+                            <span class="answer-text"><strong>Examples:</strong> BERT, GPT (GPT-3, GPT-4), T5, transformers power most modern NLP systems</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="6" data-difficulty="medium">
+                            <span class="answer-text"><strong>Advantages:</strong> Parallel processing (faster training), better long-range context, transfer learning capabilities</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="6" data-difficulty="medium">
+                            <span class="answer-text"><strong>Applications:</strong> Translation, text generation, question answering, summarization, increasingly used beyond NLP (vision transformers)</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block hard" id="q7">
+                <div class="question-header">
+                    <div class="question-number">7</div>
+                    <div class="difficulty-badge hard">🔴 Ťažká</div>
+                    <div class="question-score"><span class="score-value">0</span> / 6 bodov</div>
+                </div>
+                <div class="question-title">What is RAG (retrieval-augmented generation) and how does it relate to your expertise?</div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="7" data-difficulty="hard">
+                            <span class="answer-text"><strong>Definition:</strong> Technique combining retrieval systems with generative models - retrieves relevant documents then generates response based on retrieved context</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="7" data-difficulty="hard">
+                            <span class="answer-text"><strong>Components:</strong> Vector database/search engine for retrieval, embeddings for similarity search, LLM for generation</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="7" data-difficulty="hard">
+                            <span class="answer-text"><strong>Advantages:</strong> Reduces hallucinations, grounds responses in real data, can access up-to-date information beyond training cutoff</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="7" data-difficulty="hard">
+                            <span class="answer-text"><strong>Use cases:</strong> Enterprise Q&A systems, chatbots with knowledge bases, document analysis, customer support automation</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="7" data-difficulty="hard">
+                            <span class="answer-text"><strong>Technical implementation:</strong> Involves chunking documents, creating embeddings, storing in vector DB (Pinecone, Weaviate), semantic search + prompt engineering</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="7" data-difficulty="hard">
+                            <span class="answer-text"><strong>Personal expertise:</strong> Experience building RAG systems, working with vector databases, optimizing retrieval quality, prompt engineering for better generation</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block medium" id="q8">
+                <div class="question-header">
+                    <div class="question-number">8</div>
+                    <div class="difficulty-badge medium">🟡 Stredná</div>
+                    <div class="question-score"><span class="score-value">0</span> / 5 bodov</div>
+                </div>
+                <div class="question-title">How is fine-tuning different from regular training?</div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="8" data-difficulty="medium">
+                            <span class="answer-text"><strong>Regular training:</strong> Model trained from scratch with randomly initialized weights on large dataset</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="8" data-difficulty="medium">
+                            <span class="answer-text"><strong>Fine-tuning:</strong> Starts with pre-trained model, adapts it to specific task with smaller dataset, adjusts existing weights</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="8" data-difficulty="medium">
+                            <span class="answer-text"><strong>Advantages:</strong> Faster training, requires less data, leverages knowledge learned from large datasets</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="8" data-difficulty="medium">
+                            <span class="answer-text"><strong>Common approach:</strong> Freeze early layers (general features), train later layers (task-specific features), or use lower learning rates</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="8" data-difficulty="medium">
+                            <span class="answer-text"><strong>Examples:</strong> Taking BERT and fine-tuning for sentiment analysis, using ResNet fine-tuned for medical imaging</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block hard" id="q9">
+                <div class="question-header">
+                    <div class="question-number">9</div>
+                    <div class="difficulty-badge hard">🔴 Ťažká</div>
+                    <div class="question-score"><span class="score-value">0</span> / 6 bodov</div>
+                </div>
+                <div class="question-title">How do the fine-tuning options and limitations differ between closed-source models (e.g., OpenAI GPT-4) and open-source models that you can self-host?</div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="9" data-difficulty="hard">
+                            <span class="answer-text"><strong>Closed-source (OpenAI):</strong> Limited to API-based fine-tuning, no access to model weights, restricted customization through provided interfaces only</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="9" data-difficulty="hard">
+                            <span class="answer-text"><strong>Open-source:</strong> Full control over model architecture, can modify any layer, complete fine-tuning flexibility, access to all weights</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="9" data-difficulty="hard">
+                            <span class="answer-text"><strong>Cost considerations:</strong> Closed-source has per-token costs, open-source requires infrastructure investment but no usage fees</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="9" data-difficulty="hard">
+                            <span class="answer-text"><strong>Data privacy:</strong> Closed-source sends data to external servers, open-source allows complete on-premise deployment for sensitive data</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="9" data-difficulty="hard">
+                            <span class="answer-text"><strong>Technical expertise:</strong> Closed-source easier to use with less ML knowledge required, open-source needs deeper understanding of training, hardware, optimization</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="9" data-difficulty="hard">
+                            <span class="answer-text"><strong>Examples:</strong> Open-source options include Llama 2, Mistral, Falcon - can use LoRA, QLoRA, full fine-tuning with complete control</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-block hard" id="q10">
+                <div class="question-header">
+                    <div class="question-number">10</div>
+                    <div class="difficulty-badge hard">🔴 Ťažká</div>
+                    <div class="question-score"><span class="score-value">0</span> / 6 bodov</div>
+                </div>
+                <div class="question-title">What parameter-efficient fine-tuning techniques exist for open models (e.g., LoRA, QLoRA), and how do they work conceptually?</div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="10" data-difficulty="hard">
+                            <span class="answer-text"><strong>LoRA (Low-Rank Adaptation):</strong> Freezes pre-trained weights, adds small trainable rank decomposition matrices to layers, drastically reduces trainable parameters</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="10" data-difficulty="hard">
+                            <span class="answer-text"><strong>How LoRA works:</strong> Instead of updating weight matrix W, trains two smaller matrices A and B where W_new = W + AB, A and B much smaller</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="10" data-difficulty="hard">
+                            <span class="answer-text"><strong>QLoRA:</strong> Combines LoRA with quantization, loads model in 4-bit precision, trains LoRA adapters in higher precision, enables fine-tuning on consumer GPUs</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="10" data-difficulty="hard">
+                            <span class="answer-text"><strong>Memory benefits:</strong> Can fine-tune 65B parameter models on single GPU, reduces memory from hundreds of GB to tens of GB</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="10" data-difficulty="hard">
+                            <span class="answer-text"><strong>Other techniques:</strong> Prefix tuning (add trainable tokens), adapter layers (insert small modules), prompt tuning (optimize soft prompts)</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="10" data-difficulty="hard">
+                            <span class="answer-text"><strong>Practical benefits:</strong> Faster training, lower costs, multiple task-specific adapters can share base model, easier deployment and version control</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="final-score">
+                <h2>📊 Celkové Skóre</h2>
+                <div class="score-display" id="totalScore">0%</div>
+                <div class="score-breakdown">
+                    <div class="score-category">
+                        <div class="score-category-label">🟢 Ľahké</div>
+                        <div class="score-category-value"><span id="easyScore">0</span>/12</div>
+                    </div>
+                    <div class="score-category">
+                        <div class="score-category-label">🟡 Stredné</div>
+                        <div class="score-category-value"><span id="mediumScore">0</span>/20</div>
+                    </div>
+                    <div class="score-category">
+                        <div class="score-category-label">🔴 Ťažké</div>
+                        <div class="score-category-value"><span id="hardScore">0</span>/18</div>
+                    </div>
+                </div>
+                <div class="score-message" id="scoreMessage">Začni zaškrtávať odpovede!</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%">0%</div>
+                </div>
+                <button class="reset-button" onclick="generateReport()">📄 Vygenerovať report</button>
+                <button class="reset-button" onclick="resetAll()">🔄 Reset všetkých odpovedí</button>
+            </div>
+            <div id="reportSection" style="display: none;" class="report-output">
+                <h2>📋 Interview Report - ML/Data Science Engineer</h2>
+                <div class="report-content" id="reportContent"></div>
+                <button class="reset-button" onclick="downloadPDF()">📥 Stiahnuť PDF</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        const questionPoints = {
+            1: 4, 2: 4,
+            3: 5, 4: 5, 5: 5,
+            6: 6, 7: 6, 8: 6
+        };
+        
+        const totalPoints = Object.values(questionPoints).reduce((a, b) => a + b, 0);
+
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                updateQuestionScore(this);
+                updateTotalScore();
+                
+                const answerItem = this.closest('.answer-item');
+                if (this.checked) {
+                    answerItem.classList.add('checked');
+                } else {
+                    answerItem.classList.remove('checked');
+                }
+            });
+        });
+
+        function updateQuestionScore(checkbox) {
+            const questionNum = checkbox.getAttribute('data-question');
+            const questionBlock = document.getElementById('q' + questionNum);
+            const checkboxes = questionBlock.querySelectorAll('input[type="checkbox"]');
+            const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+            const scoreDisplay = questionBlock.querySelector('.score-value');
+            
+            scoreDisplay.textContent = checkedCount;
+            
+            scoreDisplay.style.transition = 'transform 0.2s';
+            scoreDisplay.style.transform = 'scale(1.3)';
+            setTimeout(() => {
+                scoreDisplay.style.transform = 'scale(1)';
+            }, 200);
+        }
+
+        function updateTotalScore() {
+            let totalChecked = 0;
+            let easyChecked = 0;
+            let mediumChecked = 0;
+            let hardChecked = 0;
+            
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                if (checkbox.checked) {
+                    totalChecked++;
+                    const difficulty = checkbox.getAttribute('data-difficulty');
+                    if (difficulty === 'easy') easyChecked++;
+                    else if (difficulty === 'medium') mediumChecked++;
+                    else if (difficulty === 'hard') hardChecked++;
+                }
+            });
+            
+            const percentage = Math.round((totalChecked / totalPoints) * 100);
+            const totalScoreElement = document.getElementById('totalScore');
+            const progressFill = document.getElementById('progressFill');
+            const scoreMessage = document.getElementById('scoreMessage');
+            
+            document.getElementById('easyScore').textContent = easyChecked;
+            document.getElementById('mediumScore').textContent = mediumChecked;
+            document.getElementById('hardScore').textContent = hardChecked;
+            
+            totalScoreElement.textContent = percentage + '%';
+            progressFill.style.width = percentage + '%';
+            progressFill.textContent = percentage + '%';
+            
+            if (percentage === 0) {
+                scoreMessage.textContent = '🎯 Začni zaškrtávať odpovede!';
+            } else if (percentage < 30) {
+                scoreMessage.textContent = '📚 Junior level - ešte sa treba učiť základy...';
+            } else if (percentage < 50) {
+                scoreMessage.textContent = '💪 Junior/Medior - dobrý základ, pokračuj!';
+            } else if (percentage < 70) {
+                scoreMessage.textContent = '👍 Medior level - veľmi dobre, solidné znalosti!';
+            } else if (percentage < 85) {
+                scoreMessage.textContent = '🔥 Medior/Senior - excelentné! Skoro tam!';
+            } else if (percentage < 100) {
+                scoreMessage.textContent = '🚀 Senior level - výborne! Takmer perfektné!';
+            } else {
+                scoreMessage.textContent = '🎉 Senior+ level - Perfektné! Všetko správne!';
+            }
+            
+            totalScoreElement.style.transition = 'transform 0.3s';
+            totalScoreElement.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                totalScoreElement.style.transform = 'scale(1)';
+            }, 300);
+        }
+
+        function resetAll() {
+            if (!confirm('Naozaj chceš resetovať všetky odpovede?')) {
+                return;
+            }
+            
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+                checkbox.closest('.answer-item').classList.remove('checked');
+            });
+            
+            document.querySelectorAll('.score-value').forEach(scoreValue => {
+                scoreValue.textContent = '0';
+            });
+            
+            updateTotalScore();
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        document.querySelectorAll('.answer-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (e.target.tagName !== 'INPUT') {
+                    const checkbox = this.querySelector('input[type="checkbox"]');
+                    checkbox.checked = !checkbox.checked;
+                    checkbox.dispatchEvent(new Event('change'));
+                }
+            });
+        });
+
+        window.addEventListener('load', () => {
+            updateTotalScore();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+                e.preventDefault();
+                resetAll();
+            }
+        });
+
+        async function generateReport() {
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+             const experience = document.getElementById('experience').value;
+
+        if (!firstName || !lastName || !experience) {
+            alert('Prosím vyplňte všetky povinné polia (Meno, Priezvisko, Pracovné skúsenosti)!');
+        return;
+        }
+
+        let totalChecked = 0;
+        let easyChecked = 0;
+        let mediumChecked = 0;
+        let hardChecked = 0;
+    
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            if (checkbox.checked) {
+                totalChecked++;
+                const difficulty = checkbox.getAttribute('data-difficulty');
+                if (difficulty === 'easy') easyChecked++;
+                else if (difficulty === 'medium') mediumChecked++;
+                else if (difficulty === 'hard') hardChecked++;
+            }
+        });
+    
+    const percentage = Math.round((totalChecked / totalPoints) * 100);
+    
+    // ========================================
+    // NOVÁ ČASŤ - Uloženie do Firebase
+    // ========================================
+    try {
+        // Import Firestore funkcií
+        const { collection, addDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+        
+        // Vytvor objekt s dátami
+        const candidateData = {
+            name: `${firstName} ${lastName}`,
+            firstName: firstName,
+            lastName: lastName,
+            position: "Data Engineer",  // Názov pozície
+            experience: experience,
+            date: new Date().toISOString(),
+            timestamp: Date.now(),
+            score: percentage,
+            totalPoints: totalChecked,
+            easyScore: easyChecked,
+            mediumScore: mediumChecked,
+            hardScore: hardChecked,
+            maxPoints: totalPoints
+        };
+        
+        // Ulož do Firestore
+        const docRef = await addDoc(collection(window.firestoreDb, "candidates"), candidateData);
+        
+        console.log('✅ Kandidát uložený s ID:', docRef.id);
+        alert('✅ Interview výsledky boli úspešne uložené do databázy!');
+        
+    } catch (error) {
+        console.error("❌ Chyba pri ukladaní do Firestore:", error);
+        alert('⚠️ Chyba pri ukladaní: ' + error.message + '\n\nReport sa vygeneruje aj bez uloženia.');
+    }
+    // ========================================
+    // KONIEC NOVEJ ČASTI
+    // ========================================
+    
+    // Zvyšok pôvodnej funkcie (generovanie textového reportu)
+    const experienceLabels = {
+        '0-1': '0-1 rok (Junior)',
+        '1-3': '1-3 roky (Junior/Medior)',
+        '3-5': '3-5 rokov (Medior)',
+        '5-8': '5-8 rokov (Senior)',
+        '8+': '8+ rokov (Senior+)'
+    };
+
+    const reportText = `
+═══════════════════════════════════════════════════════════
+            T - MOBILE DATA ENGINEER - INTERVIEW REPORT
+═══════════════════════════════════════════════════════════
+
+Kandidát: ${firstName} ${lastName}
+Seniorita: ${experienceLabels[experience]}
+Dátum: ${new Date().toLocaleDateString('sk-SK')}
+
+───────────────────────────────────────────────────────────
+                        CELKOVÉ SKÓRE
+───────────────────────────────────────────────────────────
+
+Celkové skóre: ${percentage}% (${totalChecked}/${totalPoints} bodov)
+
+Rozdelenie podľa obtiažnosti:
+  🟢 Ľahké:   ${easyChecked}/8 bodov
+  🟡 Stredné: ${mediumChecked}/15 bodov
+  🔴 Ťažké:   ${hardChecked}/18 bodov
+
+───────────────────────────────────────────────────────────
+                          HODNOTENIE
+───────────────────────────────────────────────────────────
+
+${getEvaluationText(percentage)}
+
+═══════════════════════════════════════════════════════════
+`;
+
+    document.getElementById('reportContent').textContent = reportText;
+    document.getElementById('reportSection').style.display = 'block';
+    
+    document.getElementById('reportSection').scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start' 
+    });
+}
+
+ 
+        function getEvaluationTextEnglish(percentage) {
+            if (percentage === 0) {
+                return 'Candidate did not complete any answers.';
+            } else if (percentage < 30) {
+                return 'Junior level - Candidate has basic awareness of the topic but\nneeds significant improvement in Data Vault and dbt areas.';
+            } else if (percentage < 50) {
+                return 'Junior/Medior level - Candidate has a good foundation but needs\nmore practical experience.';
+            } else if (percentage < 70) {
+                return 'Medior level - Candidate has solid knowledge of Data Vault\nand dbt. Recommended for Medior Data Engineer position.';
+            } else if (percentage < 85) {
+                return 'Medior/Senior level - Excellent knowledge! Candidate has\ndeep understanding of Data Vault architecture and dbt.\nRecommended for Senior Data Engineer position.';
+            } else if (percentage < 100) {
+                return 'Senior level - Outstanding! Candidate demonstrated advanced knowledge\nand practical experience. Strong candidate for Senior position.';
+            } else {
+                return 'Senior+ level - Perfect score! Candidate has expert knowledge\nof Data Vault and dbt. Recommended for Senior/Lead position.';
+            }
+        }
+
+        function getEvaluationText(percentage) {
+            if (percentage === 0) {
+                return 'Kandidát nevyplnil žiadne odpovede.';
+            } else if (percentage < 30) {
+                return 'Junior level - Kandidát má základné povedomie o téme, ale\npotrebuje výrazné zlepšenie v oblasti Data Vault a dbt.';
+            } else if (percentage < 50) {
+                return 'Junior/Medior level - Kandidát má dobrý základ, ale potrebuje\nviac praktických skúseností.';
+            } else if (percentage < 70) {
+                return 'Medior level - Kandidát má solídne znalosti Data Vault\na dbt. Odporúčame na pozíciu Medior Data Engineer.';
+            } else if (percentage < 85) {
+                return 'Medior/Senior level - Excelentné znalosti! Kandidát má\nhĺbkové porozumenie Data Vault architektúre a dbt.\nOdporúčame na pozíciu Senior Data Engineer.';
+            } else if (percentage < 100) {
+                return 'Senior level - Výborné! Kandidát preukázal pokročilé znalosti\na praktické skúsenosti. Silný kandidát na Senior pozíciu.';
+            } else {
+                return 'Senior+ level - Perfektné skóre! Kandidát má expertné znalosti\nData Vault a dbt. Odporúčame na Senior/Lead pozíciu.';
+            }
+        }
+
+        function copyReport() {
+            const reportText = document.getElementById('reportContent').textContent;
+            navigator.clipboard.writeText(reportText).then(() => {
+                alert('✅ Report bol skopírovaný do schránky!');
+            }).catch(err => {
+                alert('❌ Chyba pri kopírovaní: ' + err);
+            });
+        }
+
+        function downloadPDF() {
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const experience = document.getElementById('experience').value;
+            
+            let totalChecked = 0;
+            let easyChecked = 0;
+            let mediumChecked = 0;
+            let hardChecked = 0;
+            
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                if (checkbox.checked) {
+                    totalChecked++;
+                    const difficulty = checkbox.getAttribute('data-difficulty');
+                    if (difficulty === 'easy') easyChecked++;
+                    else if (difficulty === 'medium') mediumChecked++;
+                    else if (difficulty === 'hard') hardChecked++;
+                }
+            });
+            
+            const percentage = Math.round((totalChecked / totalPoints) * 100);
+            
+            const experienceLabels = {
+                '0-1': '0-1 rok (Junior)',
+                '1-3': '1-3 roky (Junior/Medior)',
+                '3-5': '3-5 rokov (Medior)',
+                '5-8': '5-8 rokov (Senior)',
+                '8+': '8+ rokov (Senior+)'
+            };
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Nastavenia
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const margin = 20;
+            let yPosition = 20;
+            
+            // Hlavička - T-Mobile farba
+            doc.setFillColor(226, 0, 116); // T-Mobile pink
+            doc.rect(0, 0, pageWidth, 40, 'F');
+            
+            // Titulok
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(20);
+            doc.setFont(undefined, 'bold');
+            doc.text('T - MOBILE DATA ENGINEER', pageWidth / 2, 15, { align: 'center' });
+            doc.setFontSize(14);
+            doc.text('Interview Report', pageWidth / 2, 25, { align: 'center' });
+            
+            yPosition = 50;
+            doc.setTextColor(0, 0, 0);
+            
+            // Informácie o kandidátovi
+            doc.setFontSize(16);
+            doc.setFont(undefined, 'bold');
+            doc.text('Candidate Information', margin, yPosition);
+            yPosition += 10;
+            
+            doc.setFontSize(11);
+            doc.setFont(undefined, 'normal');
+            doc.text(`Name: ${firstName} ${lastName}`, margin, yPosition);
+            yPosition += 7;
+            doc.text(`Seniority Level: ${experienceLabels[experience]}`, margin, yPosition);
+            yPosition += 7;
+            doc.text(`Date: ${new Date().toLocaleDateString('en-US')}`, margin, yPosition);
+            yPosition += 15;
+            
+            // Čiara
+            doc.setDrawColor(200, 200, 200);
+            doc.line(margin, yPosition, pageWidth - margin, yPosition);
+            yPosition += 10;
+            
+            // Celkové skóre - hlavný box
+            doc.setFillColor(17, 153, 142); // Zelená
+            doc.rect(margin, yPosition, pageWidth - 2 * margin, 30, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text('TOTAL SCORE', pageWidth / 2, yPosition + 10, { align: 'center' });
+            
+            doc.setFontSize(24);
+            doc.text(`${percentage}%`, pageWidth / 2, yPosition + 23, { align: 'center' });
+            
+            yPosition += 40;
+            doc.setTextColor(0, 0, 0);
+            
+            // Rozdelenie bodov
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'bold');
+            doc.text('Score Breakdown by Difficulty:', margin, yPosition);
+            yPosition += 10;
+            
+            doc.setFont(undefined, 'normal');
+            doc.setFontSize(11);
+            
+            // Ľahké
+            doc.setFillColor(76, 175, 80);
+            doc.circle(margin + 3, yPosition - 2, 2, 'F');
+            doc.text(`Easy:`, margin + 8, yPosition);
+            doc.setFont(undefined, 'bold');
+            doc.text(`${easyChecked}/8 points`, margin + 30, yPosition);
+            yPosition += 7;
+            
+            // Stredné
+            doc.setFont(undefined, 'normal');
+            doc.setFillColor(255, 152, 0);
+            doc.circle(margin + 3, yPosition - 2, 2, 'F');
+            doc.text(`Medium:`, margin + 8, yPosition);
+            doc.setFont(undefined, 'bold');
+            doc.text(`${mediumChecked}/15 points`, margin + 30, yPosition);
+            yPosition += 7;
+            
+            // Ťažké
+            doc.setFont(undefined, 'normal');
+            doc.setFillColor(244, 67, 54);
+            doc.circle(margin + 3, yPosition - 2, 2, 'F');
+            doc.text(`Hard:`, margin + 8, yPosition);
+            doc.setFont(undefined, 'bold');
+            doc.text(`${hardChecked}/18 points`, margin + 30, yPosition);
+            yPosition += 15;
+            
+            // Čiara
+            doc.setDrawColor(200, 200, 200);
+            doc.line(margin, yPosition, pageWidth - margin, yPosition);
+            yPosition += 10;
+            
+            // Hodnotenie
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'bold');
+            doc.text('EVALUATION', margin, yPosition);
+            yPosition += 8;
+            
+            doc.setFontSize(10);
+            doc.setFont(undefined, 'normal');
+            const evaluationText = getEvaluationTextEnglish(percentage);
+            const splitText = doc.splitTextToSize(evaluationText, pageWidth - 2 * margin);
+            doc.text(splitText, margin, yPosition);
+            yPosition += splitText.length * 6;
+            
+            // Footer
+            yPosition = doc.internal.pageSize.getHeight() - 15;
+            doc.setFontSize(8);
+            doc.setTextColor(150, 150, 150);
+            doc.text('Generated by T-Mobile Interview System', pageWidth / 2, yPosition, { align: 'center' });
+            
+            // Uloženie PDF
+            const fileName = `T-Mobile_Interview_${firstName}_${lastName}_${new Date().toISOString().split('T')[0]}.pdf`;
+            doc.save(fileName);
+        }
+    </script>
+</body>
+</html>
