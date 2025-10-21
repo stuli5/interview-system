@@ -1,5 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- Pridaj pred </head> -->
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+  import { getFirestore, collection, getDocs, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+  // VLOŽ SVOJ FIREBASE CONFIG
+  const firebaseConfig = {
+    apiKey: "AIzaSyBiv8l8NO4nGFWyjhQe5WzXLxv58H03lHs",
+    authDomain: "interview-system-4cbf9.firebaseapp.com",
+    projectId: "interview-system-4cbf9",
+    storageBucket: "interview-system-4cbf9.firebasestorage.app",
+    messagingSenderId: "805986631869",
+    appId: "1:805986631869:web:574b1c6732eefad64eb7d4",
+    measurementId: "G-5T1PJE27FE"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Načítaj kandidátov z Firestore
+  async function loadCandidatesFromFirestore() {
+    const querySnapshot = await getDocs(collection(db, "candidates"));
+    const candidates = [];
+    querySnapshot.forEach((doc) => {
+      candidates.push({ id: doc.id, ...doc.data() });
+    });
+    displayCandidates(candidates);
+  }
+
+  // Delete kandidáta
+  async function deleteCandidateFromFirestore(candidateId) {
+    if (confirm('Naozaj chceš vymazať tohto kandidáta?')) {
+      await deleteDoc(doc(db, "candidates", candidateId));
+      loadCandidatesFromFirestore();
+    }
+  }
+
+  // Expose functions globally
+  window.loadCandidatesFromFirestore = loadCandidatesFromFirestore;
+  window.deleteCandidateFromFirestore = deleteCandidateFromFirestore;
+
+  // Load on page load
+  loadCandidatesFromFirestore();
+</script>    
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -370,31 +414,34 @@
         
         function displayCandidates() {
             const list = document.getElementById('candidatesList');
-            
-            if (candidates.length === 0) {
-                list.innerHTML = '<div class="empty-state">Zatiaľ žiadni kandidáti. Pridaj kandidátov cez interview formuláre.</div>';
-                return;
-            }
-            
-            candidates.sort((a, b) => new Date(a.date) - new Date(b.date));
-            
-            list.innerHTML = candidates.map((candidate, index) => `
-                <div class="candidate-card">
-                    <div class="candidate-header">
-                        <div class="candidate-name">${candidate.name}</div>
-                        <button class="delete-btn" onclick="deleteCandidate(${index})">Delete</button>
-                    </div>
-                    <div class="candidate-position">${candidate.position}</div>
-                    <div class="candidate-info">
-                        <div class="info-item">
-                            <span class="info-label">📅 Date:</span> ${new Date(candidate.date).toLocaleDateString()}
-                        </div>
-                        ${candidate.time ? `<div class="info-item"><span class="info-label">🕒 Time:</span> ${candidate.time}</div>` : ''}
-                        ${candidate.email ? `<div class="info-item"><span class="info-label">📧 Email:</span> ${candidate.email}</div>` : ''}
-                        ${candidate.phone ? `<div class="info-item"><span class="info-label">📞 Phone:</span> ${candidate.phone}</div>` : ''}
-                    </div>
-                    ${candidate.summary ? `<div class="candidate-summary"><strong>Summary:</strong> ${candidate.summary}</div>` : ''}
+    
+    if (candidates.length === 0) {
+        list.innerHTML = '<div class="empty-state">Zatiaľ žiadni kandidáti. Pridaj kandidátov cez interview formuláre.</div>';
+        return;
+    }
+    
+    // Zoradi podľa dátumu
+    candidates.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    list.innerHTML = candidates.map((candidate) => `
+            <div class="candidate-card">
+                <div class="candidate-header">
+                    <div class="candidate-name">${candidate.name}</div>
+                <button class="delete-btn" onclick="deleteCandidateFromFirestore('${candidate.id}')">Delete</button>
                 </div>
+                <div class="candidate-position">${candidate.position}</div>
+                <div class="candidate-info">
+                    <div class="info-item">
+                        <span class="info-label">📅 Date:</span> ${new Date(candidate.date).toLocaleDateString()}
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">💼 Experience:</span> ${candidate.experience}
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">📊 Score:</span> ${candidate.score}% (${candidate.totalPoints}/${candidate.maxPoints})
+                    </div>
+                    </div>
+            </div>
             `).join('');
         }
         
