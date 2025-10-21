@@ -254,7 +254,58 @@
             transform: scale(1.05);
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
+        .candidate-info {
+            background: #f8f9fa;
+            padding: 30px;
+            margin: 30px;
+            border-radius: 15px;
+            border-left: 5px solid #E20074;
+        }
 
+        .candidate-info h2 {
+            color: #E20074;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 1.05em;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #E20074;
+            box-shadow: 0 0 0 3px rgba(226, 0, 116, 0.1);
+        }
         code {
             background: #f5f5f5;
             padding: 2px 6px;
@@ -289,7 +340,32 @@
             <h1>🐍 AI Technical Interview</h1>
             <p>Python Backend Engineer - Technical Questions</p>
         </div>
-
+        <div class="candidate-info">
+    <h2>👤 Informácie o kandidátovi</h2>
+    <div class="form-row">
+        <div class="form-group">
+            <label for="firstName">Meno *</label>
+            <input type="text" id="firstName" placeholder="Zadajte vaše meno" required>
+        </div>
+        <div class="form-group">
+            <label for="lastName">Priezvisko *</label>
+            <input type="text" id="lastName" placeholder="Zadajte vaše priezvisko" required>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group full-width">
+            <label for="experience">Pracovné skúsenosti (roky) *</label>
+            <select id="experience" required>
+                <option value="">Vyberte úroveň skúseností</option>
+                <option value="0-1">0-1 rok (Junior)</option>
+                <option value="1-3">1-3 roky (Junior/Medior)</option>
+                <option value="3-5">3-5 rokov (Medior)</option>
+                <option value="5-8">5-8 rokov (Senior)</option>
+                <option value="8+">8+ rokov (Senior+)</option>
+            </select>
+        </div>
+    </div>
+</div>
         <div class="content">
             <!-- Question 1: SW Quality Standards -->
             <div class="question-block critical" id="q1">
@@ -1106,7 +1182,18 @@
                     <div class="progress-fill" id="progressFill" style="width: 0%">0%</div>
                 </div>
                 <button class="reset-button" onclick="resetAll()">🔄 Reset All Answers</button>
+                <button class="reset-button" onclick="generateReport()">📋 Generate Report</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Report section (hidden until report is generated) -->
+    <div id="reportSection" style="display:none; padding:20px; max-width:1200px; margin:20px auto;">
+        <h3>Interview Report</h3>
+        <pre id="reportContent" style="white-space:pre-wrap; background:#f7f7f7; padding:15px; border-radius:8px; max-height:400px; overflow:auto;"> </pre>
+        <div style="margin-top:12px;">
+            <button class="reset-button" onclick="downloadReport()">⬇️ Download Report</button>
+            <button class="reset-button" onclick="(function(){ document.getElementById('reportSection').style.display='none'; })()">✖️ Close</button>
         </div>
     </div>
 
@@ -1220,6 +1307,68 @@
             setTimeout(() => {
                 totalScoreElement.style.transform = 'scale(1)';
             }, 300);
+        }
+        function generateReport() {
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const experience = document.getElementById('experience').value;
+
+            if (!firstName || !lastName || !experience) {
+                alert('Prosím vyplňte všetky povinné polia!');
+                return;
+            }
+
+            let totalChecked = 0;
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                if (cb.checked) totalChecked++;
+            });
+
+            const percentage = Math.round((totalChecked / totalPoints) * 100);
+
+            const reportText = `
+═══════════════════════════════════════════════════════════
+        T-MOBILE PYTHON BACKEND ENGINEER - INTERVIEW REPORT
+═══════════════════════════════════════════════════════════
+
+Kandidát: ${firstName} ${lastName}
+Seniorita: ${experience}
+Dátum: ${new Date().toLocaleDateString('sk-SK')}
+
+───────────────────────────────────────────────────────────
+                        CELKOVÉ SKÓRE
+───────────────────────────────────────────────────────────
+
+Celkové skóre: ${percentage}% (${totalChecked}/${totalPoints} bodov)
+
+═══════════════════════════════════════════════════════════
+`;
+
+            document.getElementById('reportContent').textContent = reportText;
+            document.getElementById('reportSection').style.display = 'block';
+            document.getElementById('reportSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function downloadPDF() {
+            alert('PDF download funkcia - implementuj podľa potreby');
+        }
+
+        function downloadReport() {
+            const content = document.getElementById('reportContent') && document.getElementById('reportContent').textContent;
+            if (!content) {
+                alert('No report generated yet. Click "Generate Report" first.');
+                return;
+            }
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const now = new Date();
+            const fileName = `interview-report-${now.toISOString().slice(0,19).replace(/[:T]/g,'-')}.txt`;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
         }
 
         function resetAll() {
