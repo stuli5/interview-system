@@ -2,19 +2,20 @@
 <html lang="en">
 <!-- Pridaj pred </head> -->
 <script type="module">
+    
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
   import { getFirestore, collection, getDocs, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-        // Firebase config - VLOŽ SVOJ CONFIG
-        const firebaseConfig = {
-            apiKey: "AIzaSyDpV4qVj-kXvpEBxh_oN8YrH0aZ0gZKz_4",  // Tvoj API key z Firebase Console
+
+         const firebaseConfig = {
+            apiKey: "AIzaSyBiv8l8NO4nGFWyjhQe5WzXLxv58H03lHs",
             authDomain: "interview-system-4cbf9.firebaseapp.com",
             projectId: "interview-system-4cbf9",
             storageBucket: "interview-system-4cbf9.firebasestorage.app",
-            messagingSenderId: "1044835226397",
-            appId: "1:1044835226397:web:48a7b8d6e4e92a74a34081"
+            messagingSenderId: "805986631869",
+            appId: "1:805986631869:web:574b1c6732eefad64eb7d4",
+            measurementId: "G-5T1PJE27FE"
         };
-
         // Inicializuj Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
