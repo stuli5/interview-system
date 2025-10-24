@@ -277,568 +277,795 @@
             </div>
         </div>
         <div class="content">
-            <div class="question-block easy" id="q1">
+            <!-- Question 1: SW Quality Standards -->
+            <div class="question-block critical" id="q1">
                 <div class="question-header">
                     <div class="question-number">1</div>
-                    <div class="difficulty-badge easy">🟢 Ľahká</div>
-                    <div class="question-score"><span class="score-value">0</span> / 4 body</div>
+                    <div class="critical-badge">❗ CRITICAL</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 4 points
+                    </div>
                 </div>
-                <div class="question-title">What is k-Fold Cross-Validation?</div>
+                <div class="question-title">
+                    How do you approach software development in terms of qualitative standards? What practices do you use to produce high-quality software? (clean architecture, testing, ...)
+                </div>
                 <div class="answers">
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="1" data-difficulty="easy">
-                            <span class="answer-text"><strong>Definition:</strong> A resampling technique that divides dataset into k equal parts (folds), trains on k-1 folds and validates on remaining fold</span>
+                            <input type="checkbox" data-question="1">
+                            <span class="answer-text"><strong>Testing:</strong> Unit tests (pytest), integration tests, end-to-end tests, min. 80% code coverage, TDD approach for critical components</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="1" data-difficulty="easy">
-                            <span class="answer-text"><strong>Process:</strong> Repeats k times, rotating which fold is used for validation, then averages the results</span>
+                            <input type="checkbox" data-question="1">
+                            <span class="answer-text"><strong>Clean Architecture:</strong> Separation of concerns (repository pattern, dependency injection), SOLID principles, hexagonal/onion architecture for larger projects</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="1" data-difficulty="easy">
-                            <span class="answer-text"><strong>Purpose:</strong> Reduces overfitting and provides more reliable estimate of model performance on unseen data</span>
+                            <input type="checkbox" data-question="1">
+                            <span class="answer-text"><strong>Code Quality Tools:</strong> Linters (ruff, pylint), formatters (black, isort), type checking (mypy), pre-commit hooks, CI/CD pipeline with quality gates</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="1" data-difficulty="easy">
-                            <span class="answer-text"><strong>Common values:</strong> Typically k=5 or k=10, balancing computational cost vs. variance reduction</span>
+                            <input type="checkbox" data-question="1">
+                            <span class="answer-text"><strong>Documentation & Review:</strong> Docstrings, README, ADR (Architecture Decision Records), code reviews, pair programming for complex features</span>
                         </label>
                     </div>
                 </div>
             </div>
 
-            <div class="question-block easy" id="q2">
+            <!-- Question 2: Testing Approach -->
+            <div class="question-block critical" id="q2">
                 <div class="question-header">
                     <div class="question-number">2</div>
-                    <div class="difficulty-badge easy">🟢 Ľahká</div>
-                    <div class="question-score"><span class="score-value">0</span> / 4 body</div>
+                    <div class="critical-badge">❗ CRITICAL</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 4 points
+                    </div>
                 </div>
-                <div class="question-title">What is the difference between supervised and unsupervised learning?</div>
+                <div class="question-title">
+                    How do you approach testing? If writing unit tests - what's the recipe for good unit tests? What are common anti-patterns? Any TDD experience?
+                </div>
                 <div class="answers">
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="2" data-difficulty="easy">
-                            <span class="answer-text"><strong>Supervised:</strong> Training data includes labeled examples (input-output pairs), model learns mapping from inputs to known outputs</span>
+                            <input type="checkbox" data-question="2">
+                            <span class="answer-text"><strong>Good unit test:</strong> Fast, Independent, Repeatable, Self-validating, Timely (F.I.R.S.T), tests one thing, clear arrange-act-assert structure, meaningful names</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="2" data-difficulty="easy">
-                            <span class="answer-text"><strong>Unsupervised:</strong> Training data has no labels, model finds patterns/structure in data without guidance</span>
+                            <input type="checkbox" data-question="2">
+                            <span class="answer-text"><strong>Anti-patterns:</strong> Testing implementation details (not behavior), flaky tests, slow tests, test interdependencies, testing private methods directly, over-mocking</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="2" data-difficulty="easy">
-                            <span class="answer-text"><strong>Supervised examples:</strong> Classification (spam detection), regression (price prediction), requires labeled training data</span>
+                            <input type="checkbox" data-question="2">
+                            <span class="answer-text"><strong>TDD workflow:</strong> Red-Green-Refactor cycle, write test before code, test defines API/interface, refactor for clean code, use for critical/complex logic</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="2" data-difficulty="easy">
-                            <span class="answer-text"><strong>Unsupervised examples:</strong> Clustering (customer segmentation), dimensionality reduction (PCA), anomaly detection</span>
+                            <input type="checkbox" data-question="2">
+                            <span class="answer-text"><strong>Testing pyramid:</strong> Many unit tests (fast, cheap), fewer integration tests, minimum E2E tests (slow, expensive), fixtures and mocking (pytest fixtures, unittest.mock)</span>
                         </label>
                     </div>
                 </div>
             </div>
 
-            <div class="question-block medium" id="q3">
+            <!-- Question 3: Event Loop -->
+            <div class="question-block critical" id="q3">
                 <div class="question-header">
                     <div class="question-number">3</div>
-                    <div class="difficulty-badge medium">🟡 Stredná</div>
-                    <div class="question-score"><span class="score-value">0</span> / 5 bodov</div>
+                    <div class="critical-badge">❗ CRITICAL</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 4 points
+                    </div>
                 </div>
-                <div class="question-title">What is reinforcement learning? What is it used for?</div>
+                <div class="question-title">
+                    Explain Python Event Loop (asyncio).
+                </div>
                 <div class="answers">
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="3" data-difficulty="medium">
-                            <span class="answer-text"><strong>Definition:</strong> Learning paradigm where agent learns to make decisions by interacting with environment and receiving rewards/penalties</span>
+                            <input type="checkbox" data-question="3">
+                            <span class="answer-text"><strong>Basic concept:</strong> Event loop is single-threaded mechanism for concurrent async code execution, uses <code>async/await</code> syntax, non-blocking I/O operations</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="3" data-difficulty="medium">
-                            <span class="answer-text"><strong>Key components:</strong> Agent, environment, state, action, reward signal - agent learns optimal policy to maximize cumulative reward</span>
+                            <input type="checkbox" data-question="3">
+                            <span class="answer-text"><strong>How it works:</strong> Loop waits for events (I/O ready, timer expires), executes callbacks/coroutines, switches between tasks when waiting for I/O (await), not parallelism (GIL)</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="3" data-difficulty="medium">
-                            <span class="answer-text"><strong>Game AI:</strong> Playing chess, Go, video games (AlphaGo, OpenAI Dota 2) - learning winning strategies through self-play</span>
+                            <input type="checkbox" data-question="3">
+                            <span class="answer-text"><strong>Use cases:</strong> Web servers (FastAPI/aiohttp), DB queries (asyncpg), HTTP requests (aiohttp/httpx), concurrent I/O bound tasks, not for CPU-bound (use multiprocessing)</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="3" data-difficulty="medium">
-                            <span class="answer-text"><strong>Robotics & Control:</strong> Robot navigation, autonomous vehicles, resource management, optimizing complex sequential decisions</span>
-                        </label>
-                    </div>
-                    <div class="answer-item">
-                        <label>
-                            <input type="checkbox" data-question="3" data-difficulty="medium">
-                            <span class="answer-text"><strong>Business applications:</strong> Recommendation systems, trading strategies, resource allocation, dynamic pricing</span>
+                            <input type="checkbox" data-question="3">
+                            <span class="answer-text"><strong>Practically:</strong> <code>asyncio.run()</code> or <code>asyncio.get_event_loop()</code>, <code>async def</code> functions are coroutines, <code>await</code> yields control back to loop, <code>asyncio.gather()</code> for concurrent tasks</span>
                         </label>
                     </div>
                 </div>
             </div>
 
-            <div class="question-block medium" id="q4">
+            <!-- Question 4: GIL -->
+            <div class="question-block" id="q4">
                 <div class="question-header">
                     <div class="question-number">4</div>
-                    <div class="difficulty-badge medium">🟡 Stredná</div>
-                    <div class="question-score"><span class="score-value">0</span> / 5 bodov</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 3 points
+                    </div>
                 </div>
-                <div class="question-title">What is data/class imbalance? What consequences does it have? How to treat those?</div>
+                <div class="question-title">
+                    What is GIL (Global Interpreter Lock)?
+                </div>
                 <div class="answers">
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="4" data-difficulty="medium">
-                            <span class="answer-text"><strong>Definition:</strong> When classes in dataset are not equally represented (e.g., 95% negative, 5% positive cases)</span>
+                            <input type="checkbox" data-question="4">
+                            <span class="answer-text"><strong>Definition:</strong> Mutex/lock that allows only one thread to execute Python bytecode at a time, prevents race conditions in CPython memory management</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="4" data-difficulty="medium">
-                            <span class="answer-text"><strong>Consequences:</strong> Model biased toward majority class, poor performance on minority class, misleading accuracy metrics</span>
+                            <input type="checkbox" data-question="4">
+                            <span class="answer-text"><strong>Consequences:</strong> Multi-threading in Python does NOT help for CPU-bound tasks (can't run in parallel), I/O bound tasks OK (GIL released during I/O wait)</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="4" data-difficulty="medium">
-                            <span class="answer-text"><strong>Resampling:</strong> Oversampling minority class (SMOTE), undersampling majority class, or combination of both</span>
-                        </label>
-                    </div>
-                    <div class="answer-item">
-                        <label>
-                            <input type="checkbox" data-question="4" data-difficulty="medium">
-                            <span class="answer-text"><strong>Algorithm techniques:</strong> Class weights, cost-sensitive learning, ensemble methods (balanced random forest)</span>
-                        </label>
-                    </div>
-                    <div class="answer-item">
-                        <label>
-                            <input type="checkbox" data-question="4" data-difficulty="medium">
-                            <span class="answer-text"><strong>Better metrics:</strong> Use precision, recall, F1-score, ROC-AUC instead of accuracy for imbalanced datasets</span>
+                            <input type="checkbox" data-question="4">
+                            <span class="answer-text"><strong>Solutions:</strong> Multiprocessing for CPU-intensive work (each process has own GIL), asyncio for I/O-bound, NumPy/C extensions bypass GIL, Python 3.13+ has experimental free-threaded mode</span>
                         </label>
                     </div>
                 </div>
             </div>
 
-            <div class="question-block easy" id="q5">
+            <!-- Question 5: Virtual Environments -->
+            <div class="question-block" id="q5">
                 <div class="question-header">
                     <div class="question-number">5</div>
-                    <div class="difficulty-badge easy">🟢 Ľahká</div>
-                    <div class="question-score"><span class="score-value">0</span> / 4 body</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 3 points
+                    </div>
                 </div>
-                <div class="question-title">What is feature engineering?</div>
+                <div class="question-title">
+                    What are virtual environments for? How do you manage them? (virtualenv, uv, venv, poetry...)
+                </div>
                 <div class="answers">
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="5" data-difficulty="easy">
-                            <span class="answer-text"><strong>Definition:</strong> Process of creating, transforming, and selecting features from raw data to improve model performance</span>
+                            <input type="checkbox" data-question="5">
+                            <span class="answer-text"><strong>Purpose:</strong> Isolate dependencies between projects, avoid package version conflicts, reproducible environment (requirements.txt/poetry.lock)</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="5" data-difficulty="easy">
-                            <span class="answer-text"><strong>Techniques:</strong> Creating new features (interactions, polynomials), transforming existing ones (scaling, encoding), extracting from text/dates</span>
+                            <input type="checkbox" data-question="5">
+                            <span class="answer-text"><strong>Tools:</strong> <code>venv</code> (built-in Python 3.3+), <code>virtualenv</code> (faster), <code>poetry</code> (dependency management + venv), <code>uv</code> (ultra-fast, Rust-based), <code>conda</code> (data science)</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="5" data-difficulty="easy">
-                            <span class="answer-text"><strong>Importance:</strong> Often more impactful than algorithm choice, requires domain knowledge, can significantly boost model accuracy</span>
-                        </label>
-                    </div>
-                    <div class="answer-item">
-                        <label>
-                            <input type="checkbox" data-question="5" data-difficulty="easy">
-                            <span class="answer-text"><strong>Examples:</strong> One-hot encoding categorical variables, extracting day/month from dates, creating ratio features, binning continuous variables</span>
+                            <input type="checkbox" data-question="5">
+                            <span class="answer-text"><strong>Best practices:</strong> One venv per project, commit requirements.txt/pyproject.toml (NOT venv folder), activate before work (<code>source venv/bin/activate</code>), use <code>.gitignore</code> for venv</span>
                         </label>
                     </div>
                 </div>
             </div>
 
-            <div class="question-block medium" id="q6">
+            <!-- Question 6: Dependency Injection -->
+            <div class="question-block critical" id="q6">
                 <div class="question-header">
                     <div class="question-number">6</div>
-                    <div class="difficulty-badge medium">🟡 Stredná</div>
-                    <div class="question-score"><span class="score-value">0</span> / 5 bodov</div>
+                    <div class="critical-badge">❗ CRITICAL</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 4 points
+                    </div>
                 </div>
-                <div class="question-title">What are transformer-based models?</div>
+                <div class="question-title">
+                    What is dependency injection? How do you implement it in FastAPI stack?
+                </div>
                 <div class="answers">
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="6" data-difficulty="medium">
-                            <span class="answer-text"><strong>Architecture:</strong> Neural network architecture based on self-attention mechanism, processes sequences without recurrence (unlike RNN/LSTM)</span>
+                            <input type="checkbox" data-question="6">
+                            <span class="answer-text"><strong>Concept:</strong> Design pattern where dependencies are provided from outside (not created internally), improves testability, loose coupling, SOLID principles</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="6" data-difficulty="medium">
-                            <span class="answer-text"><strong>Self-attention:</strong> Allows model to weigh importance of different words in sequence, capturing long-range dependencies efficiently</span>
+                            <input type="checkbox" data-question="6">
+                            <span class="answer-text"><strong>FastAPI DI system:</strong> <code>Depends()</code> function, declare dependencies in function signature, FastAPI automatically resolves and injects them</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="6" data-difficulty="medium">
-                            <span class="answer-text"><strong>Examples:</strong> BERT, GPT (GPT-3, GPT-4), T5, transformers power most modern NLP systems</span>
+                            <input type="checkbox" data-question="6">
+                            <span class="answer-text"><strong>Example:</strong> DB session injection (<code>def get_db()</code>), authentication (<code>get_current_user</code>), pagination, caching, dependencies can have sub-dependencies (chain)</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="6" data-difficulty="medium">
-                            <span class="answer-text"><strong>Advantages:</strong> Parallel processing (faster training), better long-range context, transfer learning capabilities</span>
-                        </label>
-                    </div>
-                    <div class="answer-item">
-                        <label>
-                            <input type="checkbox" data-question="6" data-difficulty="medium">
-                            <span class="answer-text"><strong>Applications:</strong> Translation, text generation, question answering, summarization, increasingly used beyond NLP (vision transformers)</span>
+                            <input type="checkbox" data-question="6">
+                            <span class="answer-text"><strong>Benefits:</strong> Easy mocking in tests (override dependencies), reusable logic, automatic cleanup (yield pattern), type hints + auto documentation</span>
                         </label>
                     </div>
                 </div>
             </div>
 
-            <div class="question-block hard" id="q7">
+            <!-- Question 7: Interfaces in Python -->
+            <div class="question-block" id="q7">
                 <div class="question-header">
                     <div class="question-number">7</div>
-                    <div class="difficulty-badge hard">🔴 Ťažká</div>
-                    <div class="question-score"><span class="score-value">0</span> / 6 bodov</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 3 points
+                    </div>
                 </div>
-                <div class="question-title">What is RAG (retrieval-augmented generation) and how does it relate to your expertise?</div>
+                <div class="question-title">
+                    How would you implement an interface in Python?
+                </div>
                 <div class="answers">
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="7" data-difficulty="hard">
-                            <span class="answer-text"><strong>Definition:</strong> Technique combining retrieval systems with generative models - retrieves relevant documents then generates response based on retrieved context</span>
+                            <input type="checkbox" data-question="7">
+                            <span class="answer-text"><strong>ABC (Abstract Base Classes):</strong> <code>from abc import ABC, abstractmethod</code>, define abstract methods, subclasses must implement, runtime error if not</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="7" data-difficulty="hard">
-                            <span class="answer-text"><strong>Components:</strong> Vector database/search engine for retrieval, embeddings for similarity search, LLM for generation</span>
+                            <input type="checkbox" data-question="7">
+                            <span class="answer-text"><strong>Protocol (PEP 544):</strong> Structural subtyping (duck typing with type checking), <code>from typing import Protocol</code>, no runtime checks, only static type checkers (mypy)</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="7" data-difficulty="hard">
-                            <span class="answer-text"><strong>Advantages:</strong> Reduces hallucinations, grounds responses in real data, can access up-to-date information beyond training cutoff</span>
-                        </label>
-                    </div>
-                    <div class="answer-item">
-                        <label>
-                            <input type="checkbox" data-question="7" data-difficulty="hard">
-                            <span class="answer-text"><strong>Use cases:</strong> Enterprise Q&A systems, chatbots with knowledge bases, document analysis, customer support automation</span>
-                        </label>
-                    </div>
-                    <div class="answer-item">
-                        <label>
-                            <input type="checkbox" data-question="7" data-difficulty="hard">
-                            <span class="answer-text"><strong>Technical implementation:</strong> Involves chunking documents, creating embeddings, storing in vector DB (Pinecone, Weaviate), semantic search + prompt engineering</span>
-                        </label>
-                    </div>
-                    <div class="answer-item">
-                        <label>
-                            <input type="checkbox" data-question="7" data-difficulty="hard">
-                            <span class="answer-text"><strong>Personal expertise:</strong> Experience building RAG systems, working with vector databases, optimizing retrieval quality, prompt engineering for better generation</span>
+                            <input type="checkbox" data-question="7">
+                            <span class="answer-text"><strong>Use case:</strong> Repository pattern (DB abstraction), plugins/drivers, dependency inversion principle, easy mocking in tests, prefer Protocol for modern Python (3.8+)</span>
                         </label>
                     </div>
                 </div>
             </div>
 
-            <div class="question-block medium" id="q8">
+            <!-- Question 8: Data Structures -->
+            <div class="question-block critical" id="q8">
                 <div class="question-header">
                     <div class="question-number">8</div>
-                    <div class="difficulty-badge medium">🟡 Stredná</div>
-                    <div class="question-score"><span class="score-value">0</span> / 5 bodov</div>
+                    <div class="critical-badge">❗ CRITICAL</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 4 points
+                    </div>
                 </div>
-                <div class="question-title">How is fine-tuning different from regular training?</div>
+                <div class="question-title">
+                    What's the difference between List, Set, Tuple, and Dictionary?
+                </div>
                 <div class="answers">
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="8" data-difficulty="medium">
-                            <span class="answer-text"><strong>Regular training:</strong> Model trained from scratch with randomly initialized weights on large dataset</span>
+                            <input type="checkbox" data-question="8">
+                            <span class="answer-text"><strong>List:</strong> Ordered, mutable, allows duplicates, <code>[1,2,3]</code>, O(1) append/access by index, O(n) search, use case: sequences, stacks</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="8" data-difficulty="medium">
-                            <span class="answer-text"><strong>Fine-tuning:</strong> Starts with pre-trained model, adapts it to specific task with smaller dataset, adjusts existing weights</span>
+                            <input type="checkbox" data-question="8">
+                            <span class="answer-text"><strong>Tuple:</strong> Ordered, immutable, allows duplicates, <code>(1,2,3)</code>, faster than list, hashable (can be dict key), use case: constants, function returns</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="8" data-difficulty="medium">
-                            <span class="answer-text"><strong>Advantages:</strong> Faster training, requires less data, leverages knowledge learned from large datasets</span>
+                            <input type="checkbox" data-question="8">
+                            <span class="answer-text"><strong>Set:</strong> Unordered, mutable, NO duplicates, <code>{1,2,3}</code>, O(1) add/remove/lookup, use case: membership testing, remove duplicates, set operations (union, intersection)</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="8" data-difficulty="medium">
-                            <span class="answer-text"><strong>Common approach:</strong> Freeze early layers (general features), train later layers (task-specific features), or use lower learning rates</span>
-                        </label>
-                    </div>
-                    <div class="answer-item">
-                        <label>
-                            <input type="checkbox" data-question="8" data-difficulty="medium">
-                            <span class="answer-text"><strong>Examples:</strong> Taking BERT and fine-tuning for sentiment analysis, using ResNet fine-tuned for medical imaging</span>
+                            <input type="checkbox" data-question="8">
+                            <span class="answer-text"><strong>Dictionary:</strong> Unordered (Python 3.7+ insertion order), mutable, key-value pairs, <code>{'a': 1}</code>, O(1) lookup, keys must be hashable, use case: mappings, caching, config</span>
                         </label>
                     </div>
                 </div>
             </div>
 
-            <div class="question-block hard" id="q9">
+            <!-- Question 9: Generators -->
+            <div class="question-block critical" id="q9">
                 <div class="question-header">
                     <div class="question-number">9</div>
-                    <div class="difficulty-badge hard">🔴 Ťažká</div>
-                    <div class="question-score"><span class="score-value">0</span> / 6 bodov</div>
+                    <div class="critical-badge">❗ CRITICAL</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 3 points
+                    </div>
                 </div>
-                <div class="question-title">How do the fine-tuning options and limitations differ between closed-source models (e.g., OpenAI GPT-4) and open-source models that you can self-host?</div>
+                <div class="question-title">
+                    What is Python Generator?
+                </div>
                 <div class="answers">
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="9" data-difficulty="hard">
-                            <span class="answer-text"><strong>Closed-source (OpenAI):</strong> Limited to API-based fine-tuning, no access to model weights, restricted customization through provided interfaces only</span>
+                            <input type="checkbox" data-question="9">
+                            <span class="answer-text"><strong>Definition:</strong> Function with <code>yield</code> statement, returns iterator, lazy evaluation (generates values on-the-fly), pauses execution at yield, resumes at next()</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="9" data-difficulty="hard">
-                            <span class="answer-text"><strong>Open-source:</strong> Full control over model architecture, can modify any layer, complete fine-tuning flexibility, access to all weights</span>
+                            <input type="checkbox" data-question="9">
+                            <span class="answer-text"><strong>Advantages:</strong> Memory efficient (don't load all into memory), infinite sequences possible, pipeline processing, faster for large datasets than lists</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="9" data-difficulty="hard">
-                            <span class="answer-text"><strong>Cost considerations:</strong> Closed-source has per-token costs, open-source requires infrastructure investment but no usage fees</span>
-                        </label>
-                    </div>
-                    <div class="answer-item">
-                        <label>
-                            <input type="checkbox" data-question="9" data-difficulty="hard">
-                            <span class="answer-text"><strong>Data privacy:</strong> Closed-source sends data to external servers, open-source allows complete on-premise deployment for sensitive data</span>
-                        </label>
-                    </div>
-                    <div class="answer-item">
-                        <label>
-                            <input type="checkbox" data-question="9" data-difficulty="hard">
-                            <span class="answer-text"><strong>Technical expertise:</strong> Closed-source easier to use with less ML knowledge required, open-source needs deeper understanding of training, hardware, optimization</span>
-                        </label>
-                    </div>
-                    <div class="answer-item">
-                        <label>
-                            <input type="checkbox" data-question="9" data-difficulty="hard">
-                            <span class="answer-text"><strong>Examples:</strong> Open-source options include Llama 2, Mistral, Falcon - can use LoRA, QLoRA, full fine-tuning with complete control</span>
+                            <input type="checkbox" data-question="9">
+                            <span class="answer-text"><strong>Use cases:</strong> Reading large files line-by-line, streaming data, pagination, infinite sequences (fibonacci), ETL pipelines, generator expressions <code>(x**2 for x in range(1000))</code></span>
                         </label>
                     </div>
                 </div>
             </div>
 
-            <div class="question-block hard" id="q10">
+            <!-- Question 10: DataFrame Dimensions -->
+            <div class="question-block" id="q10">
                 <div class="question-header">
                     <div class="question-number">10</div>
-                    <div class="difficulty-badge hard">🔴 Ťažká</div>
-                    <div class="question-score"><span class="score-value">0</span> / 6 bodov</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 2 points
+                    </div>
                 </div>
-                <div class="question-title">What parameter-efficient fine-tuning techniques exist for open models (e.g., LoRA, QLoRA), and how do they work conceptually?</div>
+                <div class="question-title">
+                    How do you get the dimensions of a DataFrame (pandas)?
+                </div>
                 <div class="answers">
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="10" data-difficulty="hard">
-                            <span class="answer-text"><strong>LoRA (Low-Rank Adaptation):</strong> Freezes pre-trained weights, adds small trainable rank decomposition matrices to layers, drastically reduces trainable parameters</span>
+                            <input type="checkbox" data-question="10">
+                            <span class="answer-text"><strong>Shape:</strong> <code>df.shape</code> returns tuple <code>(rows, columns)</code>, e.g. <code>(100, 5)</code> = 100 rows, 5 columns</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="10" data-difficulty="hard">
-                            <span class="answer-text"><strong>How LoRA works:</strong> Instead of updating weight matrix W, trains two smaller matrices A and B where W_new = W + AB, A and B much smaller</span>
-                        </label>
-                    </div>
-                    <div class="answer-item">
-                        <label>
-                            <input type="checkbox" data-question="10" data-difficulty="hard">
-                            <span class="answer-text"><strong>QLoRA:</strong> Combines LoRA with quantization, loads model in 4-bit precision, trains LoRA adapters in higher precision, enables fine-tuning on consumer GPUs</span>
-                        </label>
-                    </div>
-                    <div class="answer-item">
-                        <label>
-                            <input type="checkbox" data-question="10" data-difficulty="hard">
-                            <span class="answer-text"><strong>Memory benefits:</strong> Can fine-tune 65B parameter models on single GPU, reduces memory from hundreds of GB to tens of GB</span>
-                        </label>
-                    </div>
-                    <div class="answer-item">
-                        <label>
-                            <input type="checkbox" data-question="10" data-difficulty="hard">
-                            <span class="answer-text"><strong>Other techniques:</strong> Prefix tuning (add trainable tokens), adapter layers (insert small modules), prompt tuning (optimize soft prompts)</span>
-                        </label>
-                    </div>
-                    <div class="answer-item">
-                        <label>
-                            <input type="checkbox" data-question="10" data-difficulty="hard">
-                            <span class="answer-text"><strong>Practical benefits:</strong> Faster training, lower costs, multiple task-specific adapters can share base model, easier deployment and version control</span>
+                            <input type="checkbox" data-question="10">
+                            <span class="answer-text"><strong>Alternatives:</strong> <code>len(df)</code> = number of rows, <code>len(df.columns)</code> = number of columns, <code>df.info()</code> = detailed info (dtypes, memory), <code>df.describe()</code> = stats</span>
                         </label>
                     </div>
                 </div>
             </div>
 
-            <div class="question-block easy" id="q11">
+            <!-- Question 11: Docker Benefits -->
+            <div class="question-block critical" id="q11">
                 <div class="question-header">
                     <div class="question-number">11</div>
-                    <div class="difficulty-badge easy">🟢 Ľahká</div>
-                    <div class="question-score"><span class="score-value">0</span> / 4 body</div>
+                    <div class="critical-badge">❗ CRITICAL</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 4 points
+                    </div>
                 </div>
-                <div class="question-title">List vs Tuple in Python? When do you use what?</div>
+                <div class="question-title">
+                    What are the benefits of containerization (Docker)? How is it different from running directly on host?
+                </div>
                 <div class="answers">
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="11" data-difficulty="easy">
-                            <span class="answer-text"><strong>List:</strong> Mutable (can modify after creation), uses square brackets [], slower, for collections that change</span>
+                            <input type="checkbox" data-question="11">
+                            <span class="answer-text"><strong>Isolation:</strong> Process/filesystem/network isolation, dependency conflicts resolved (each container has own dependencies), security (sandboxing)</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="11" data-difficulty="easy">
-                            <span class="answer-text"><strong>Tuple:</strong> Immutable (cannot modify after creation), uses parentheses (), faster, less memory, for fixed collections</span>
+                            <input type="checkbox" data-question="11">
+                            <span class="answer-text"><strong>Reproducibility:</strong> "Works on my machine" problem solved, Dockerfile = infrastructure as code, same environment dev/staging/prod, version control for images</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="11" data-difficulty="easy">
-                            <span class="answer-text"><strong>Use list when:</strong> Data will be modified (append, remove, sort), working with dynamic collections, need list methods</span>
+                            <input type="checkbox" data-question="11">
+                            <span class="answer-text"><strong>Portability:</strong> Run anywhere (Linux/Mac/Windows/Cloud), easy deployment, rollbacks (tagged images), microservices architecture, orchestration (Kubernetes)</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="11" data-difficulty="easy">
-                            <span class="answer-text"><strong>Use tuple when:</strong> Data should not change (coordinates, RGB values), dictionary keys, function return multiple values, better performance needed</span>
+                            <input type="checkbox" data-question="11">
+                            <span class="answer-text"><strong>Difference vs host:</strong> Containers share OS kernel (not full VM), lightweight (MB vs GB), faster startup, but not 100% isolation like VM, host has direct hardware access</span>
                         </label>
                     </div>
                 </div>
             </div>
 
-            <div class="question-block medium" id="q12">
+            <!-- Question 12: Cloud Experience -->
+            <div class="question-block critical" id="q12">
                 <div class="question-header">
                     <div class="question-number">12</div>
-                    <div class="difficulty-badge medium">🟡 Stredná</div>
-                    <div class="question-score"><span class="score-value">0</span> / 5 bodov</div>
+                    <div class="critical-badge">❗ CRITICAL</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 3 points
+                    </div>
                 </div>
-                <div class="question-title">What are decorators in Python?</div>
+                <div class="question-title">
+                    What cloud providers do you have the most experience with? For what?
+                </div>
                 <div class="answers">
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="12" data-difficulty="medium">
-                            <span class="answer-text"><strong>Definition:</strong> Functions that modify behavior of other functions/methods, using @decorator_name syntax above function definition</span>
+                            <input type="checkbox" data-question="12">
+                            <span class="answer-text"><strong>AWS:</strong> EC2 (compute), S3 (storage), RDS (DB), Lambda (serverless), ECS/EKS (containers), CloudWatch (monitoring), IAM (security), VPC (networking)</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="12" data-difficulty="medium">
-                            <span class="answer-text"><strong>How they work:</strong> Take function as input, add functionality, return modified function - implements wrapper pattern</span>
+                            <input type="checkbox" data-question="12">
+                            <span class="answer-text"><strong>GCP:</strong> Compute Engine, Cloud Storage, BigQuery (data warehouse), Cloud Functions, GKE (Kubernetes), Pub/Sub (messaging), Vertex AI (ML)</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="12" data-difficulty="medium">
-                            <span class="answer-text"><strong>Common uses:</strong> Logging, timing functions, authentication/authorization, caching (memoization), validation</span>
-                        </label>
-                    </div>
-                    <div class="answer-item">
-                        <label>
-                            <input type="checkbox" data-question="12" data-difficulty="medium">
-                            <span class="answer-text"><strong>Built-in examples:</strong> @property, @staticmethod, @classmethod, @lru_cache for performance optimization</span>
-                        </label>
-                    </div>
-                    <div class="answer-item">
-                        <label>
-                            <input type="checkbox" data-question="12" data-difficulty="medium">
-                            <span class="answer-text"><strong>Practical benefit:</strong> Clean code separation of concerns, reusable cross-cutting functionality, don't repeat yourself (DRY)</span>
+                            <input type="checkbox" data-question="12">
+                            <span class="answer-text"><strong>Azure:</strong> Virtual Machines, Blob Storage, Azure SQL, Azure Functions, AKS, DevOps (CI/CD), Cognitive Services | Practical use cases: hosting APIs, data pipelines, ML models</span>
                         </label>
                     </div>
                 </div>
             </div>
 
-            <div class="question-block easy" id="q13">
+            <!-- Question 13: API Performance Investigation -->
+            <div class="question-block" id="q13">
                 <div class="question-header">
                     <div class="question-number">13</div>
-                    <div class="difficulty-badge easy">🟢 Ľahká</div>
-                    <div class="question-score"><span class="score-value">0</span> / 4 body</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 4 points
+                    </div>
                 </div>
-                <div class="question-title">What is the purpose of the .groupby() method in the Pandas library?</div>
+                <div class="question-title">
+                    Consider you have an API server and there's a performance issue. How would you approach the investigation to fix the cause? Any experience with performance profilers?
+                </div>
                 <div class="answers">
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="13" data-difficulty="easy">
-                            <span class="answer-text"><strong>Purpose:</strong> Groups rows of DataFrame based on column values, enabling aggregation and analysis per group</span>
+                            <input type="checkbox" data-question="13">
+                            <span class="answer-text"><strong>Monitoring:</strong> Check metrics (response time, CPU, memory, DB queries), logs (errors, slow queries), APM tools (New Relic, DataDog), identify slow endpoints</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="13" data-difficulty="easy">
-                            <span class="answer-text"><strong>Common operations:</strong> sum(), mean(), count(), min(), max() applied to each group separately</span>
+                            <input type="checkbox" data-question="13">
+                            <span class="answer-text"><strong>Profiling:</strong> Python profilers - <code>cProfile</code> (function calls), <code>line_profiler</code> (line-by-line), <code>memory_profiler</code>, <code>py-spy</code> (production), visualization with flame graphs</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="13" data-difficulty="easy">
-                            <span class="answer-text"><strong>Example use:</strong> df.groupby('category').mean() - calculates average for each category, like SQL GROUP BY</span>
+                            <input type="checkbox" data-question="13">
+                            <span class="answer-text"><strong>Common culprits:</strong> N+1 queries (DB), blocking I/O operations, large payloads, missing indexes, memory leaks, synchronous API calls, unoptimized queries</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="13" data-difficulty="easy">
-                            <span class="answer-text"><strong>Advanced features:</strong> Can group by multiple columns, apply custom functions with .agg(), transform data within groups</span>
+                            <input type="checkbox" data-question="13">
+                            <span class="answer-text"><strong>Fixes:</strong> Caching (Redis), connection pooling, async operations, pagination, DB query optimization, load balancing, CDN for static assets, code optimization (algorithms)</span>
                         </label>
                     </div>
                 </div>
             </div>
 
-            <div class="question-block medium" id="q14">
+            <!-- Question 14: SQL Performance -->
+            <div class="question-block" id="q14">
                 <div class="question-header">
                     <div class="question-number">14</div>
-                    <div class="difficulty-badge medium">🟡 Stredná</div>
-                    <div class="question-score"><span class="score-value">0</span> / 5 bodov</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 4 points
+                    </div>
                 </div>
-                <div class="question-title">Explain the difference between a generator and a normal function that returns a list. Why are generators (which use the yield keyword) particularly beneficial when processing very large, potentially memory-intensive datasets in data science?</div>
+                <div class="question-title">
+                    Consider a performance issue during SQL SELECT query, what are the typical causes?
+                </div>
                 <div class="answers">
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="14" data-difficulty="medium">
-                            <span class="answer-text"><strong>Normal function:</strong> Returns entire list at once, all values stored in memory simultaneously</span>
+                            <input type="checkbox" data-question="14">
+                            <span class="answer-text"><strong>Missing indexes:</strong> Full table scan instead of index scan, <code>EXPLAIN ANALYZE</code> for query plan, indexes on WHERE/JOIN/ORDER BY columns</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="14" data-difficulty="medium">
-                            <span class="answer-text"><strong>Generator:</strong> Uses yield keyword, returns one value at a time (lazy evaluation), maintains state between calls</span>
+                            <input type="checkbox" data-question="14">
+                            <span class="answer-text"><strong>JOINs:</strong> Too many JOINs (5+), JOINs on large tables without indexes, cartesian product (missing JOIN condition), sometimes better multiple queries than one big JOIN</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="14" data-difficulty="medium">
-                            <span class="answer-text"><strong>Memory efficiency:</strong> Generator stores only current item, not entire dataset - critical for large datasets that won't fit in RAM</span>
+                            <input type="checkbox" data-question="14">
+                            <span class="answer-text"><strong>SELECT *:</strong> Fetching unnecessary columns, large BLOBs/TEXT fields, better to explicitly name needed columns, use pagination (LIMIT/OFFSET)</span>
                         </label>
                     </div>
                     <div class="answer-item">
                         <label>
-                            <input type="checkbox" data-question="14" data-difficulty="medium">
-                            <span class="answer-text"><strong>Data science use:</strong> Processing large CSV files, streaming data, ETL pipelines, batch processing without loading everything into memory</span>
-                        </label>
-                    </div>
-                    <div class="answer-item">
-                        <label>
-                            <input type="checkbox" data-question="14" data-difficulty="medium">
-                            <span class="answer-text"><strong>Example:</strong> Reading 100GB file line-by-line with generator vs loading all into list (would crash), enables processing datasets larger than available RAM</span>
+                            <input type="checkbox" data-question="14">
+                            <span class="answer-text"><strong>Other:</strong> Subqueries instead of JOINs, functions in WHERE (prevents index usage), outdated statistics, table locks, suboptimal data types, denormalization can help</span>
                         </label>
                     </div>
                 </div>
             </div>
 
+            <!-- Question 15: SQL vs NoSQL -->
+            <div class="question-block" id="q15">
+                <div class="question-header">
+                    <div class="question-number">15</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 3 points
+                    </div>
+                </div>
+                <div class="question-title">
+                    SQL vs NoSQL - what do you typically use and why?
+                </div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="15">
+                            <span class="answer-text"><strong>SQL (PostgreSQL, MySQL):</strong> Structured data, ACID transactions, complex queries/JOINs, data integrity (foreign keys), reporting, analytics, financials - default choice</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="15">
+                            <span class="answer-text"><strong>NoSQL - Document (MongoDB):</strong> Flexible schema, nested objects, rapid prototyping, CMS, catalogs; Key-Value (Redis): caching, sessions, rate limiting; Time-series (InfluxDB): metrics, IoT</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="15">
+                            <span class="answer-text"><strong>Decision:</strong> SQL for majority use cases (relational data, transactions), NoSQL for specific needs (scale-out, flexible schema, high throughput), often hybrid approach</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 16: Database Transactions -->
+            <div class="question-block" id="q16">
+                <div class="question-header">
+                    <div class="question-number">16</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 3 points
+                    </div>
+                </div>
+                <div class="question-title">
+                    What is the use case for database transactions?
+                </div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="16">
+                            <span class="answer-text"><strong>ACID properties:</strong> Atomicity (all or nothing), Consistency (valid state), Isolation (concurrent transactions), Durability (persisted), prevents partial updates</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="16">
+                            <span class="answer-text"><strong>Use cases:</strong> Banking (money transfer between accounts), e-commerce (order + payment + inventory update), multi-table inserts/updates where all must succeed or rollback</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="16">
+                            <span class="answer-text"><strong>Practically:</strong> <code>BEGIN; ... COMMIT;</code> or <code>ROLLBACK;</code> on error, SQLAlchemy session management, context managers, optimistic locking for conflicts</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 17: TTL in PostgreSQL -->
+            <div class="question-block" id="q17">
+                <div class="question-header">
+                    <div class="question-number">17</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 3 points
+                    </div>
+                </div>
+                <div class="question-title">
+                    How would you implement TTL (Time To Live) in PostgreSQL? Without using Redis
+                </div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="17">
+                            <span class="answer-text"><strong>Column + scheduled job:</strong> Add <code>expires_at TIMESTAMP</code> column, scheduled job (cron/pg_cron) deleting <code>DELETE FROM table WHERE expires_at < NOW()</code></span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="17">
+                            <span class="answer-text"><strong>Partitioning:</strong> Time-based partitions (daily/weekly), DROP old partitions (faster than DELETE), automatic partition management extensions</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="17">
+                            <span class="answer-text"><strong>View + trigger:</strong> Materialized view filtering expired rows, trigger on DELETE, or application-level filter <code>WHERE expires_at > NOW()</code> in queries, vacuum for cleanup</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 18: Repository vs Unit of Work -->
+            <div class="question-block" id="q18">
+                <div class="question-header">
+                    <div class="question-number">18</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 3 points
+                    </div>
+                </div>
+                <div class="question-title">
+                    What is the difference between the "Repository" and the "Unit of Work" patterns?
+                </div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="18">
+                            <span class="answer-text"><strong>Repository:</strong> Abstraction over data access (DB), collection-like interface (<code>get(), add(), delete()</code>), encapsulates queries, one repository per entity/aggregate</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="18">
+                            <span class="answer-text"><strong>Unit of Work:</strong> Manages transactions across multiple repositories, tracks changes (dirty checking), commit/rollback all operations at once, responsible for consistency</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="18">
+                            <span class="answer-text"><strong>Relationship:</strong> UoW contains repositories, UoW = transaction boundary, Repositories = data access, SQLAlchemy Session is essentially UoW, together they form clean architecture</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 19: Airflow/Dagster -->
+            <div class="question-block critical" id="q19">
+                <div class="question-header">
+                    <div class="question-number">19</div>
+                    <div class="critical-badge">❗ CRITICAL</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 3 points
+                    </div>
+                </div>
+                <div class="question-title">
+                    Any data-related experience with platforms like Airflow, Dagster, etc?
+                </div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="19">
+                            <span class="answer-text"><strong>Airflow:</strong> DAG-based workflow orchestration, task dependencies, scheduling (cron), operators (Python, Bash, SQL), XComs for data passing, monitoring UI, used for ETL/ELT</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="19">
+                            <span class="answer-text"><strong>Dagster:</strong> Asset-based (data-aware), type system, testing, backfills, sensors, resources (DB connections), more modern than Airflow, better for data pipelines</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="19">
+                            <span class="answer-text"><strong>Use cases:</strong> Daily data loads, ML training pipelines, reporting automation, API data ingestion, data quality checks, orchestrating dbt runs, retry logic, alerting</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 20: AI Inference -->
+            <div class="question-block critical" id="q20">
+                <div class="question-header">
+                    <div class="question-number">20</div>
+                    <div class="critical-badge">❗ CRITICAL</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 4 points
+                    </div>
+                </div>
+                <div class="question-title">
+                    Any AI inference experience? Any experience integrating AI using frameworks like Langchain or similar? For GenAI, what to be careful about? (costs, how to calculate them, ...)
+                </div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="20">
+                            <span class="answer-text"><strong>Inference:</strong> Model serving (FastAPI, TensorFlow Serving), batch vs real-time, GPU vs CPU, model optimization (quantization, pruning), versioning, A/B testing</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="20">
+                            <span class="answer-text"><strong>Langchain:</strong> Framework for LLM apps, chains (sequential steps), agents (reasoning), RAG (retrieval), memory, prompt templates, vector DBs (Pinecone, Chroma), tool calling</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="20">
+                            <span class="answer-text"><strong>GenAI costs:</strong> Token-based pricing (input + output), GPT-4 expensive vs GPT-3.5, track usage (tokens/request), rate limiting, caching responses, prompt optimization (shorter = cheaper)</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="20">
+                            <span class="answer-text"><strong>Watch out:</strong> Prompt injection attacks, PII leakage, hallucinations, latency (streaming helps), cost explosions (monitoring!), model deprecations, context window limits</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 21: Security -->
+            <div class="question-block" id="q21">
+                <div class="question-header">
+                    <div class="question-number">21</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 4 points
+                    </div>
+                </div>
+                <div class="question-title">
+                    Security - How do you make sure your apps are secure?
+                </div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="21">
+                            <span class="answer-text"><strong>Authentication & Authorization:</strong> JWT tokens, OAuth2, API keys, RBAC (role-based access), least privilege principle, multi-factor authentication</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="21">
+                            <span class="answer-text"><strong>Input validation:</strong> SQL injection prevention (parameterized queries), XSS protection (escape output), CSRF tokens, rate limiting, input sanitization, Pydantic validation</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="21">
+                            <span class="answer-text"><strong>Secrets management:</strong> Env variables, vault (HashiCorp Vault, AWS Secrets Manager), NEVER commit secrets, rotate credentials, encrypt sensitive data at rest/transit (HTTPS/TLS)</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="21">
+                            <span class="answer-text"><strong>Dependencies & scanning:</strong> Keep dependencies updated (Dependabot), vulnerability scanning (Snyk, Safety), SAST tools, security headers (CORS, CSP), logging & monitoring, penetration testing</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 22: Password Storage -->
+            <div class="question-block" id="q22">
+                <div class="question-header">
+                    <div class="question-number">22</div>
+                    <div class="question-score">
+                        <span class="score-value">0</span> / 3 points
+                    </div>
+                </div>
+                <div class="question-title">
+                    How would you protect user passwords while storing to the database? (should be bcrypt or argon2, sha is rather bad, md5 is horrible)
+                </div>
+                <div class="answers">
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="22">
+                            <span class="answer-text"><strong>Correct: bcrypt or argon2:</strong> Slow hashing algorithms (resistant to brute-force), salt automatic, adaptive (configurable rounds/cost), <code>bcrypt.hashpw()</code> or <code>argon2-cffi</code></span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="22">
+                            <span class="answer-text"><strong>Wrong: MD5, SHA-1, plain SHA-256:</strong> Too fast (GPUs = billions hashes/sec), rainbow tables, SHA not for passwords (no salt, not slow), MD5 is completely broken</span>
+                        </label>
+                    </div>
+                    <div class="answer-item">
+                        <label>
+                            <input type="checkbox" data-question="22">
+                            <span class="answer-text"><strong>Best practices:</strong> NEVER store plaintext, unique salt per password (bcrypt auto), pepper (application-level secret), password policies (min length, complexity), MFA layer</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
             <div class="final-score">
                 <h2>📊 Celkové Skóre</h2>
                 <div class="score-display" id="totalScore">0%</div>
