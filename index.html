@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
-<!-- Pridaj pred </head> -->
-<script type="module">
-    
-  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-  import { getFirestore, collection, getDocs, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Management System</title>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, getDocs, query, orderBy, limit, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-
-         const firebaseConfig = {
+        const firebaseConfig = {
             apiKey: "AIzaSyBiv8l8NO4nGFWyjhQe5WzXLxv58H03lHs",
             authDomain: "interview-system-4cbf9.firebaseapp.com",
             projectId: "interview-system-4cbf9",
@@ -16,470 +17,378 @@
             appId: "1:805986631869:web:574b1c6732eefad64eb7d4",
             measurementId: "G-5T1PJE27FE"
         };
-        // Inicializuj Firebase
+
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        
-        console.log('✅ Firebase inicializovaný');
 
-        // Načítaj kandidátov z Firestore
-        async function loadCandidatesFromFirestore() {
-            try {
-                const querySnapshot = await getDocs(collection(db, "candidates"));
-                const candidates = [];
-                
-                querySnapshot.forEach((docSnap) => {
-                    candidates.push({ 
-                        id: docSnap.id, 
-                        ...docSnap.data() 
-                    });
-                });
-                
-                console.log('📊 Načítaných kandidátov:', candidates.length, candidates);
-                displayCandidates(candidates);
-                
-            } catch (error) {
-                console.error('❌ Error loading candidates:', error);
-                document.getElementById('candidatesList').innerHTML = 
-                    `<div class="empty-state" style="color: red;">Chyba pri načítaní: ${error.message}</div>`;
-            }
-        }
-
-        // Zmaž kandidáta
-        async function deleteCandidateFromFirestore(candidateId) {
-            if (confirm('Naozaj chceš vymazať tohto kandidáta?')) {
-                try {
-                    await deleteDoc(doc(db, "candidates", candidateId));
-                    console.log('🗑️ Kandidát zmazaný:', candidateId);
-                    loadCandidatesFromFirestore();
-                } catch (error) {
-                    console.error('❌ Error deleting:', error);
-                    alert('Chyba pri mazaní: ' + error.message);
-                }
-            }
-        }
-
-        // Zobraz kandidátov v HTML
-        function displayCandidates(candidates) {
-            const list = document.getElementById('candidatesList');
-            
-            if (!candidates || candidates.length === 0) {
-                list.innerHTML = '<div class="empty-state">Zatiaľ žiadni kandidáti. Pridaj kandidátov cez interview formuláre.</div>';
+        window.deleteCandidate = async function(docId, candidateName) {
+            if (!confirm(`Naozaj chcete vymazať kandidáta "${candidateName}"?`)) {
                 return;
             }
-            
-            // Zoradi podľa dátumu (najnovší prvý)
-            candidates.sort((a, b) => {
-                const dateA = a.timestamp || new Date(a.date).getTime();
-                const dateB = b.timestamp || new Date(b.date).getTime();
-                return dateB - dateA;
-            });
-            
-            list.innerHTML = candidates.map((candidate) => {
-                const date = candidate.date ? new Date(candidate.date).toLocaleDateString('sk-SK') : 'N/A';
-                const scoreColor = candidate.score >= 70 ? '#4caf50' : candidate.score >= 50 ? '#ff9800' : '#f44336';
-                
-                return `
-                    <div class="candidate-card">
-                        <div class="candidate-header">
-                            <div class="candidate-name">${candidate.name || 'Bez mena'}</div>
-                            <button class="delete-btn" onclick="window.deleteCandidateFromFirestore('${candidate.id}')">Delete</button>
-                        </div>
-                        <div class="candidate-position">${candidate.position || 'Neurčené'}</div>
-                        <div class="candidate-info">
-                            <div class="info-item">
-                                <span class="info-label">📅 Dátum:</span> ${date}
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">💼 Seniorita:</span> ${candidate.experience || 'N/A'}
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">📊 Skóre:</span> 
-                                <span style="color: ${scoreColor}; font-weight: bold;">${candidate.score}%</span> 
-                                (${candidate.totalPoints}/${candidate.maxPoints})
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
+
+            try {
+                await deleteDoc(doc(db, "candidates", docId));
+                console.log('✅ Kandidát vymazaný');
+                // Reload candidates after deletion
+                loadCandidates();
+            } catch (error) {
+                console.error("❌ Chyba pri mazaní:", error);
+                alert('Chyba pri mazaní kandidáta: ' + error.message);
+            }
         }
 
-        // Sprístupni funkcie globálne
-        window.loadCandidatesFromFirestore = loadCandidatesFromFirestore;
-        window.deleteCandidateFromFirestore = deleteCandidateFromFirestore;
-        window.displayCandidates = displayCandidates;
+        async function loadCandidates() {
+            try {
+                const candidatesRef = collection(db, "candidates");
+                const q = query(candidatesRef, orderBy("timestamp", "desc"), limit(20));
+                const querySnapshot = await getDocs(q);
+                
+                const dashboardContent = document.getElementById('dashboardContent');
+                
+                if (querySnapshot.empty) {
+                    dashboardContent.innerHTML = `
+                        <p style="margin-bottom: 20px;">
+                            <strong>Zatiaľ žiadni kandidáti.</strong>
+                        </p>
+                        <p>Pridaj kandidátov cez interview formuláre.</p>
+                        <p style="margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 10px; border-left: 4px solid #667eea;">
+                            💡 <strong>Tip:</strong> Vyberte pozíciu z menu a začnite interview proces.
+                        </p>
+                    `;
+                    return;
+                }
 
-        // Načítaj dáta hneď po načítaní stránky
-        loadCandidatesFromFirestore();
-</script>    
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interview Tracker</title>
+                let html = '<div class="candidates-list">';
+                
+                querySnapshot.forEach((docSnapshot) => {
+                    const data = docSnapshot.data();
+                    const docId = docSnapshot.id;
+                    const date = new Date(data.timestamp).toLocaleDateString('sk-SK');
+                    const time = new Date(data.timestamp).toLocaleTimeString('sk-SK', { hour: '2-digit', minute: '2-digit' });
+                    
+                    html += `
+                        <div class="candidate-card">
+                            <div class="candidate-header">
+                                <div class="candidate-name">${data.name}</div>
+                                <div style="display: flex; gap: 10px; align-items: center;">
+                                    <div class="candidate-score ${getScoreClass(data.score)}">${data.score}%</div>
+                                    <button class="delete-btn" onclick="deleteCandidate('${docId}', '${data.name}')" title="Vymazať kandidáta">
+                                        🗑️
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="candidate-details">
+                                <div class="candidate-position">${data.position}</div>
+                                <div class="candidate-meta">
+                                    <span>📅 ${date} ${time}</span>
+                                    <span>👤 ${data.experience}</span>
+                                </div>
+                                <div class="candidate-points">
+                                    ${data.totalPoints}/${data.maxPoints} bodov 
+                                    (🟢 ${data.easyScore} | 🟡 ${data.mediumScore} | 🔴 ${data.hardScore})
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                dashboardContent.innerHTML = html;
+                
+            } catch (error) {
+                console.error("Error loading candidates:", error);
+                document.getElementById('dashboardContent').innerHTML = `
+                    <p style="color: #f44336;">❌ Chyba pri načítaní kandidátov: ${error.message}</p>
+                `;
+            }
+        }
+
+        function getScoreClass(score) {
+            if (score >= 85) return 'score-excellent';
+            if (score >= 70) return 'score-good';
+            if (score >= 50) return 'score-medium';
+            return 'score-low';
+        }
+
+        window.addEventListener('load', loadCandidates);
+    </script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        h1 {
-            color: white;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-        
-        .main-wrapper {
-            display: grid;
-            grid-template-columns: 250px 1fr;
-            gap: 20px;
-        }
-        
-        .sidebar {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-            height: fit-content;
-        }
-        
-        .sidebar h2 {
-            color: #667eea;
-            margin-bottom: 20px;
-            font-size: 1.3em;
-        }
-        
-        .menu-item {
-            padding: 12px 15px;
-            margin-bottom: 10px;
-            background: #f8f9fa;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border-left: 4px solid transparent;
             display: flex;
             align-items: center;
-            gap: 10px;
-        }
-        
-        .menu-item:hover {
-            background: #e9ecef;
-            border-left-color: #667eea;
-            transform: translateX(5px);
-        }
-        
-        .menu-item.active {
-            background: #667eea;
-            color: white;
-            border-left-color: #764ba2;
+            justify-content: center;
+            padding: 20px;
         }
 
-        .menu-item.external::after {
-            content: '↗';
-            margin-left: auto;
-            font-size: 1.2em;
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
         }
-        
-        .content-area {
+
+        .menu-card {
             background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-            min-height: 500px;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 400px;
+            flex-shrink: 0;
         }
-        
-        .section {
-            display: none;
+
+        .page-header {
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            color: white;
         }
-        
-        .section.active {
-            display: block;
+
+        .page-header h1 {
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            justify-content: center;
         }
-        
-        .section h2 {
+
+        .menu-title {
+            font-size: 1.8em;
+            font-weight: bold;
             color: #667eea;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #333;
+            border: 2px solid transparent;
+        }
+
+        .menu-item:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(10px);
+            border-color: #667eea;
+        }
+
+        .menu-item .icon {
             font-size: 1.8em;
         }
 
-        .setup-instructions {
-            background: #f0f7ff;
-            border-left: 4px solid #667eea;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+        .menu-item .text {
+            flex: 1;
+            font-size: 1.1em;
+            font-weight: 500;
         }
 
-        .setup-instructions h3 {
+        .menu-item .arrow {
+            font-size: 1.2em;
+            opacity: 0.5;
+        }
+
+        .dashboard-card {
+            flex: 1;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .dashboard-title {
+            font-size: 1.8em;
+            font-weight: bold;
             color: #667eea;
-            margin-bottom: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        .setup-instructions code {
-            background: #e3f2fd;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: 'Courier New', monospace;
+        .candidates-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        .setup-instructions ol {
-            margin-left: 20px;
-            line-height: 1.8;
-        }
-
-        .setup-instructions li {
-            margin-bottom: 10px;
-        }
-        
         .candidate-card {
             background: #f8f9fa;
+            border-radius: 12px;
             padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            border-left: 4px solid #667eea;
-            transition: transform 0.2s;
+            border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
         }
-        
+
         .candidate-card:hover {
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
             transform: translateX(5px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
-        
+
         .candidate-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
-        
+
         .candidate-name {
             font-size: 1.3em;
-            font-weight: 600;
+            font-weight: bold;
             color: #333;
         }
-        
-        .candidate-position {
-            color: #667eea;
-            font-weight: 500;
-            margin-bottom: 10px;
-            font-size: 1.1em;
+
+        .candidate-score {
+            font-size: 1.5em;
+            font-weight: bold;
+            padding: 8px 20px;
+            border-radius: 20px;
         }
-        
-        .candidate-info {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+
+        .score-excellent {
+            background: #4caf50;
+            color: white;
+        }
+
+        .score-good {
+            background: #ff9800;
+            color: white;
+        }
+
+        .score-medium {
+            background: #2196f3;
+            color: white;
+        }
+
+        .score-low {
+            background: #f44336;
+            color: white;
+        }
+
+        .candidate-details {
+            display: flex;
+            flex-direction: column;
             gap: 10px;
-            margin-bottom: 10px;
-            font-size: 0.95em;
         }
-        
-        .info-item {
+
+        .candidate-position {
+            font-size: 1.1em;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .candidate-meta {
+            display: flex;
+            gap: 20px;
             color: #666;
-        }
-        
-        .info-label {
-            font-weight: 500;
-            color: #333;
-        }
-        
-        .candidate-summary {
-            color: #555;
             font-size: 0.95em;
-            line-height: 1.6;
-            background: white;
-            padding: 15px;
-            border-radius: 6px;
-            margin-top: 10px;
         }
-        
+
+        .candidate-points {
+            color: #666;
+            font-size: 0.95em;
+            padding-top: 10px;
+            border-top: 1px solid #e0e0e0;
+        }
+
         .delete-btn {
-            background: #dc3545;
+            background: #f44336;
             color: white;
             border: none;
-            padding: 6px 18px;
-            border-radius: 4px;
+            padding: 8px 12px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 0.9em;
-            transition: background 0.3s;
-        }
-        
-        .delete-btn:hover {
-            background: #c82333;
-        }
-        
-        .empty-state {
-            text-align: center;
-            color: #999;
-            padding: 60px 20px;
             font-size: 1.2em;
+            transition: all 0.3s ease;
         }
 
-        .github-link {
-            background: #24292e;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 6px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 20px;
-            transition: background 0.3s;
+        .delete-btn:hover {
+            background: #d32f2f;
+            transform: scale(1.1);
         }
 
-        .github-link:hover {
-            background: #1a1e22;
-        }
-        
-        @media (max-width: 768px) {
-            .main-wrapper {
-                grid-template-columns: 1fr;
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
             }
-            
-            .candidate-info {
-                grid-template-columns: 1fr;
+
+            .menu-card {
+                width: 100%;
+            }
+
+            .dashboard-card {
+                max-height: none;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="page-header">
         <h1>📋 Interview Management System</h1>
-        
-        <div class="main-wrapper">
-            <div class="sidebar">
-                <h2>Menu</h2>
-                <div class="menu-item external" onclick="openForm('ai-engineer')">
-                    🤖 AI Engineer
-                </div>
-                <div class="menu-item external" onclick="openForm('data-engineer')">
-                    📊 Data Engineer
-                </div>
-                <div class="menu-item external" onclick="openForm('form2')">
-                    📝 Data Science
-                </div>
-                <div class="menu-item external" onclick="openForm('node-react')">
-                    📝 Fullstack developer
-                <div class="menu-item external" onclick="openForm('node-react developer')">
-                    📝 Node-React developer
-                </div>
-                <div class="menu-item active" onclick="showSection('dashboard')">
-                    📈 Dashboard
-                </div>
-            </div> 
-                <div id="dashboard" class="section active">
-                    <h2>📊 Candidates Dashboard</h2>
-                    <div id="candidatesList"></div>
-                </div>
+    </div>
+
+    <div class="container">
+        <div class="menu-card">
+            <div class="menu-title">Menu</div>
+            
+            <a href="forms/ai-engineer.html" class="menu-item">
+                <span class="icon">🧠</span>
+                <span class="text">AI Engineer</span>
+                <span class="arrow">→</span>
+            </a>
+
+            <a href="forms/data-engineer.html" class="menu-item">
+                <span class="icon">📊</span>
+                <span class="text">Data Engineer</span>
+                <span class="arrow">→</span>
+            </a>
+
+            <a href="forms/data-science.html" class="menu-item">
+                <span class="icon">🤖</span>
+                <span class="text">Data Science</span>
+                <span class="arrow">→</span>
+            </a>
+
+            <a href="forms/node-react.html" class="menu-item">
+                <span class="icon">⚛️</span>
+                <span class="text">React & Node.js</span>
+                <span class="arrow">→</span>
+            </a>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="dashboard-title">
+                📊 Recent Candidates
+            </div>
+            <div id="dashboardContent">
+                <p style="text-align: center; color: #666; padding: 40px;">
+                    ⏳ Načítavam kandidátov...
+                </p>
             </div>
         </div>
     </div>
-
-    <script>
-        let candidates = [];
-        
-        // GitHub Pages URL - PRODUCTION
-        const baseURL = 'https://stuli5.github.io/interview-system/forms/';
-        
-        function openForm(formName) {
-            let url;
-            switch(formName) {
-                case 'ai-engineer':
-                    url = baseURL + 'ai-engineer.html';
-                    break;
-                case 'data-engineer':
-                    url = baseURL + 'data-engineer.html';
-                    break;
-                case 'form2':
-                    url = baseURL + 'data-science.html';
-                    break;
-                case 'form3':
-                    url = baseURL + 'node-react.html';
-                    break;
-                default:
-                    alert('Formulár ešte nebol pridaný');
-                    return;
-            }
-            window.open(url, '_blank');
-        }
-        
-        function showSection(sectionId) {
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            document.querySelectorAll('.menu-item:not(.external)').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            document.getElementById(sectionId).classList.add('active');
-            event.target.classList.add('active');
-        }
-        
-        function loadCandidates() {
-            const stored = localStorage.getItem('candidates');
-            if (stored) {
-                candidates = JSON.parse(stored);
-                displayCandidates();
-            }
-        }
-        
-        function displayCandidates() {
-            const list = document.getElementById('candidatesList');
-    
-    if (candidates.length === 0) {
-        list.innerHTML = '<div class="empty-state">Zatiaľ žiadni kandidáti. Pridaj kandidátov cez interview formuláre.</div>';
-        return;
-    }
-    
-    // Zoradi podľa dátumu
-    candidates.sort((a, b) => new Date(b.date) - new Date(a.date));
-    
-    list.innerHTML = candidates.map((candidate) => `
-            <div class="candidate-card">
-                <div class="candidate-header">
-                    <div class="candidate-name">${candidate.name}</div>
-                <button class="delete-btn" onclick="deleteCandidateFromFirestore('${candidate.id}')">Delete</button>
-                </div>
-                <div class="candidate-position">${candidate.position}</div>
-                <div class="candidate-info">
-                    <div class="info-item">
-                        <span class="info-label">📅 Date:</span> ${new Date(candidate.date).toLocaleDateString()}
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">💼 Experience:</span> ${candidate.experience}
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">📊 Score:</span> ${candidate.score}% (${candidate.totalPoints}/${candidate.maxPoints})
-                    </div>
-                    </div>
-            </div>
-            `).join('');
-        }
-        
-        function deleteCandidate(index) {
-            if (confirm('Naozaj chceš vymazať tohto kandidáta?')) {
-                candidates.splice(index, 1);
-                localStorage.setItem('candidates', JSON.stringify(candidates));
-                displayCandidates();
-            }
-        }
-        
-        loadCandidates();
-    </script>
 </body>
 </html>
