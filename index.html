@@ -4,6 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interview Management System</title>
+    
+    <!-- 🔒 SECURITY: Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; 
+                   script-src 'self' https://www.gstatic.com; 
+                   style-src 'self' 'unsafe-inline'; 
+                   connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com;
+                   img-src 'self' data: https:;
+                   font-src 'self';
+                   frame-ancestors 'none';">
+    
+    <!-- 🔒 SECURITY: Additional headers via meta tags -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
@@ -23,49 +38,205 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // 🔒 PROTECTION: Check authentication
+        // ============================================
+        // 🔒 SECURITY FUNCTIONS
+        // ============================================
+
+        /**
+         * XSS Protection: Escape HTML
+         */
+        function escapeHtml(unsafe) {
+            if (typeof unsafe !== 'string') return unsafe;
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        /**
+         * Rate Limiter Class
+         */
+        class RateLimiter {
+            constructor(maxAttempts = 5, windowMs = 60000) {
+                this.maxAttempts = maxAttempts;
+                this.windowMs = windowMs;
+                this.attempts = new Map();
+            }
+
+            isAllowed(key) {
+                const now = Date.now();
+                const userAttempts = this.attempts.get(key) || [];
+                const validAttempts = userAttempts.filter(time => now - time < this.windowMs);
+                
+                if (validAttempts.length >= this.maxAttempts) {
+                    return false;
+                }
+                
+                validAttempts.push(now);
+                this.attempts.set(key, validAttempts);
+                return true;
+            }
+
+            reset(key) {
+                this.attempts.delete(key);
+            }
+        }
+
+        /**
+         * Session Timeout Manager
+         */
+        class SessionTimeout {
+            constructor(timeoutMinutes = 30) {
+                this.timeoutMs = timeoutMinutes * 60 * 1000;
+                this.timeoutId = null;
+                this.warningTimeoutId = null;
+                this.init();
+            }
+
+            init() {
+                this.resetTimer();
+                const events = ['mousedown', 'keydown', 'scroll', 'touchstart'];
+                events.forEach(event => {
+                    document.addEventListener(event, () => this.resetTimer(), true);
+                });
+            }
+
+            resetTimer() {
+                this.clearTimers();
+                
+                // Warning 5 minutes before timeout
+                this.warningTimeoutId = setTimeout(() => {
+                    alert('⚠️ Vaša session vyprší o 5 minút kvôli nečinnosti.');
+                }, this.timeoutMs - (5 * 60 * 1000));
+                
+                // Auto-logout
+                this.timeoutId = setTimeout(async () => {
+                    alert('🔒 Vaša session vypršala z dôvodu nečinnosti.');
+                    await signOut(auth);
+                    window.location.replace('login.html');
+                }, this.timeoutMs);
+            }
+
+            clearTimers() {
+                if (this.timeoutId) clearTimeout(this.timeoutId);
+                if (this.warningTimeoutId) clearTimeout(this.warningTimeoutId);
+            }
+        }
+
+        /**
+         * Validate candidate data integrity
+         */
+        function validateCandidateData(data) {
+            return (
+                data &&
+                typeof data.name === 'string' &&
+                data.name.length > 0 &&
+                data.name.length <= 100 &&
+                typeof data.score === 'number' &&
+                data.score >= 0 && data.score <= 100 &&
+                typeof data.position === 'string' &&
+                typeof data.timestamp === 'number'
+            );
+        }
+
+        /**
+         * Secure logging (redact sensitive info)
+         */
+        function secureLog(message, data = null) {
+            const timestamp = new Date().toISOString();
+            if (data) {
+                const safeData = { ...data };
+                const sensitiveFields = ['password', 'token', 'apiKey', 'secret'];
+                sensitiveFields.forEach(field => {
+                    if (safeData[field]) safeData[field] = '[REDACTED]';
+                });
+                console.log(`[${timestamp}] ${message}`, safeData);
+            } else {
+                console.log(`[${timestamp}] ${message}`);
+            }
+        }
+
+        // ============================================
+        // 🔒 INITIALIZE SECURITY
+        // ============================================
+
+        const deleteRateLimiter = new RateLimiter(5, 60000); // 5 deletes per minute
+        const sessionTimeout = new SessionTimeout(30); // 30 minutes
+
+        // ============================================
+        // 🔒 AUTHENTICATION
+        // ============================================
+
         onAuthStateChanged(auth, (user) => {
             const loadingScreen = document.getElementById('auth-loading');
             
             if (!user) {
-                // Not logged in - redirect to login immediately
                 window.location.replace('login.html');
             } else {
-                // User is logged in - show content
                 loadingScreen.classList.add('hidden');
                 document.body.classList.add('auth-checked');
-                document.getElementById('userEmail').textContent = user.email;
+                document.getElementById('userEmail').textContent = escapeHtml(user.email);
+                secureLog('User authenticated', { email: user.email });
                 loadCandidates();
             }
         });
 
-        // Logout function
+        // ============================================
+        // 🚪 LOGOUT
+        // ============================================
+
         window.handleLogout = async function() {
             if (confirm('Naozaj sa chcete odhlásiť?')) {
                 try {
                     await signOut(auth);
-                    window.location.href = 'login.html';
+                    secureLog('User logged out');
+                    window.location.replace('login.html');
                 } catch (error) {
-                    console.error('Logout error:', error);
+                    secureLog('Logout error', { error: error.message });
                     alert('Chyba pri odhlasovaní');
                 }
             }
         }
 
+        // ============================================
+        // 🗑️ DELETE CANDIDATE (with security)
+        // ============================================
+
         window.deleteCandidate = async function(docId, candidateName) {
-            if (!confirm(`Naozaj chcete vymazať kandidáta "${candidateName}"?`)) {
+            // 🔒 Rate limiting
+            if (!deleteRateLimiter.isAllowed(docId)) {
+                alert('⚠️ Príliš veľa pokusov. Počkajte chvíľu.');
+                secureLog('Delete rate limit exceeded', { docId });
+                return;
+            }
+
+            // 🔒 Double confirmation
+            const safeName = escapeHtml(candidateName);
+            if (!confirm(`Naozaj chcete vymazať kandidáta "${safeName}"?`)) {
+                return;
+            }
+
+            // Second confirmation with delay
+            await new Promise(resolve => setTimeout(resolve, 300));
+            if (!confirm('Toto je NEVRATNÁ operácia. Ste si istý?')) {
                 return;
             }
 
             try {
                 await deleteDoc(doc(db, "candidates", docId));
-                console.log('✅ Kandidát vymazaný');
+                secureLog('Candidate deleted', { docId, name: candidateName });
                 loadCandidates();
             } catch (error) {
-                console.error("❌ Chyba pri mazaní:", error);
-                alert('Chyba pri mazaní kandidáta: ' + error.message);
+                secureLog('Delete error', { error: error.message, docId });
+                alert('❌ Chyba pri mazaní kandidáta: ' + error.message);
             }
         }
+
+        // ============================================
+        // 📊 LOAD CANDIDATES (with XSS protection)
+        // ============================================
 
         async function loadCandidates() {
             try {
@@ -89,33 +260,50 @@
                 }
 
                 let html = '<div class="candidates-list">';
+                let validCount = 0;
+                let invalidCount = 0;
                 
                 querySnapshot.forEach((docSnapshot) => {
                     const data = docSnapshot.data();
+                    
+                    // 🔒 Validate data integrity
+                    if (!validateCandidateData(data)) {
+                        secureLog('Invalid candidate data detected', { docId: docSnapshot.id });
+                        invalidCount++;
+                        return;
+                    }
+                    
+                    validCount++;
                     const docId = docSnapshot.id;
+                    
+                    // 🔒 Escape all user-provided data
+                    const safeName = escapeHtml(data.name);
+                    const safePosition = escapeHtml(data.position);
+                    const safeExperience = escapeHtml(data.experience || 'N/A');
+                    
                     const date = new Date(data.timestamp).toLocaleDateString('sk-SK');
                     const time = new Date(data.timestamp).toLocaleTimeString('sk-SK', { hour: '2-digit', minute: '2-digit' });
                     
                     html += `
                         <div class="candidate-card">
                             <div class="candidate-header">
-                                <div class="candidate-name">${data.name}</div>
+                                <div class="candidate-name">${safeName}</div>
                                 <div style="display: flex; gap: 10px; align-items: center;">
-                                    <div class="candidate-score ${getScoreClass(data.score)}">${data.score}%</div>
-                                    <button class="delete-btn" onclick="deleteCandidate('${docId}', '${data.name}')" title="Vymazať kandidáta">
+                                    <div class="candidate-score ${getScoreClass(data.score)}">${Math.round(data.score)}%</div>
+                                    <button class="delete-btn" onclick="deleteCandidate('${docId}', '${safeName}')" title="Vymazať kandidáta">
                                         🗑️
                                     </button>
                                 </div>
                             </div>
                             <div class="candidate-details">
-                                <div class="candidate-position">${data.position}</div>
+                                <div class="candidate-position">${safePosition}</div>
                                 <div class="candidate-meta">
                                     <span>📅 ${date} ${time}</span>
-                                    <span>👤 ${data.experience}</span>
+                                    <span>👤 ${safeExperience}</span>
                                 </div>
                                 <div class="candidate-points">
-                                    ${data.totalPoints}/${data.maxPoints} bodov 
-                                    (🟢 ${data.easyScore} | 🟡 ${data.mediumScore} | 🔴 ${data.hardScore})
+                                    ${data.totalPoints || 0}/${data.maxPoints || 0} bodov 
+                                    (🟢 ${data.easyScore || 0} | 🟡 ${data.mediumScore || 0} | 🔴 ${data.hardScore || 0})
                                 </div>
                             </div>
                         </div>
@@ -123,12 +311,20 @@
                 });
                 
                 html += '</div>';
+                
+                if (invalidCount > 0) {
+                    html = `<div style="background: #fff3cd; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #ffc107;">
+                        ⚠️ <strong>Upozornenie:</strong> ${invalidCount} záznamov bolo preskočených kvôli neplatným dátam.
+                    </div>` + html;
+                }
+                
                 dashboardContent.innerHTML = html;
+                secureLog('Candidates loaded', { valid: validCount, invalid: invalidCount });
                 
             } catch (error) {
-                console.error("Error loading candidates:", error);
+                secureLog('Error loading candidates', { error: error.message });
                 document.getElementById('dashboardContent').innerHTML = `
-                    <p style="color: #f44336;">❌ Chyba pri načítaní kandidátov: ${error.message}</p>
+                    <p style="color: #f44336;">❌ Chyba pri načítaní kandidátov: ${escapeHtml(error.message)}</p>
                 `;
             }
         }
