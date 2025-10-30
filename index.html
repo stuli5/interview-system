@@ -5,7 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interview Management System</title>
     
-    <!-- 🔒 SECURITY: Content Security Policy -->
+    <!-- 🔒 SECURITY: Content Security Policy (relaxed for inline handlers) -->
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; 
+                   script-src 'self' 'unsafe-inline' https://www.gstatic.com; 
+                   style-src 'self' 'unsafe-inline'; 
+                   connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com;
+                   img-src 'self' data: https:;
+                   font-src 'self';
+                   frame-ancestors 'none';">
     
     <!-- 🔒 SECURITY: Additional headers via meta tags -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
