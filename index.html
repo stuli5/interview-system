@@ -6,6 +6,7 @@
     <title>Interview Management System</title>
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
         import { getFirestore, collection, getDocs, query, orderBy, limit, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
         const firebaseConfig = {
@@ -19,7 +20,33 @@
         };
 
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getFirestore(app);
+
+        // 🔒 PROTECTION: Check authentication
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                // Not logged in - redirect to login
+                window.location.href = 'login.html';
+            } else {
+                // User is logged in - show content
+                document.getElementById('userEmail').textContent = user.email;
+                loadCandidates();
+            }
+        });
+
+        // Logout function
+        window.handleLogout = async function() {
+            if (confirm('Naozaj sa chcete odhlásiť?')) {
+                try {
+                    await signOut(auth);
+                    window.location.href = 'login.html';
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    alert('Chyba pri odhlasovaní');
+                }
+            }
+        }
 
         window.deleteCandidate = async function(docId, candidateName) {
             if (!confirm(`Naozaj chcete vymazať kandidáta "${candidateName}"?`)) {
@@ -29,7 +56,6 @@
             try {
                 await deleteDoc(doc(db, "candidates", docId));
                 console.log('✅ Kandidát vymazaný');
-                // Reload candidates after deletion
                 loadCandidates();
             } catch (error) {
                 console.error("❌ Chyba pri mazaní:", error);
@@ -109,8 +135,6 @@
             if (score >= 50) return 'score-medium';
             return 'score-low';
         }
-
-        window.addEventListener('load', loadCandidates);
     </script>
     <style>
         * {
@@ -162,6 +186,40 @@
             align-items: center;
             gap: 15px;
             justify-content: center;
+        }
+
+        .user-info {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-email {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #d32f2f;
+            transform: scale(1.05);
         }
 
         .menu-title {
@@ -342,12 +400,27 @@
             .dashboard-card {
                 max-height: none;
             }
+
+            .user-info {
+                position: static;
+                margin-bottom: 20px;
+            }
+
+            .page-header {
+                position: static;
+                margin-bottom: 20px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="page-header">
         <h1>📋 Interview Management System</h1>
+    </div>
+
+    <div class="user-info">
+        <span class="user-email" id="userEmail">Loading...</span>
+        <button class="logout-btn" onclick="handleLogout()">🚪 Odhlásiť</button>
     </div>
 
     <div class="container">
